@@ -44,6 +44,28 @@
   .sym-btn{background:var(--panel);border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:'Oxanium',sans-serif;font-size:11px;font-weight:600;transition:all .15s;}
   .sym-btn:hover{border-color:var(--accent);color:var(--accent);}
   .sym-btn.active{background:rgba(0,199,255,.12);border-color:var(--accent);color:var(--accent);}
+
+  /* Symbol dropdown items */
+  .sym-drop-item{
+    display:block; width:100%; text-align:left;
+    background:none; border:none; color:var(--muted);
+    padding:8px 14px; cursor:pointer;
+    font-family:'Oxanium',sans-serif; font-size:12px; font-weight:600;
+    transition:background .1s;
+    border-bottom:1px solid rgba(255,255,255,.03);
+  }
+  .sym-drop-item:hover{background:rgba(255,255,255,.05);color:var(--text);}
+  .sym-drop-item.active{color:var(--accent);background:rgba(0,199,255,.08);}
+
+  /* Timeframe buttons */
+  .tf-btn{
+    background:var(--panel); border:1px solid var(--border);
+    color:var(--muted); padding:3px 8px; border-radius:3px;
+    cursor:pointer; font-family:'Oxanium',sans-serif;
+    font-size:10px; font-weight:700; transition:all .15s;
+  }
+  .tf-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .tf-btn.active{background:rgba(255,196,0,.12);border-color:var(--gold);color:var(--gold);}
   #ohlc-bar{display:flex;gap:12px;align-items:center;margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:11px;}
   .ohlc-item{display:flex;flex-direction:column;align-items:flex-end;}
   .ohlc-label{font-size:8px;color:var(--muted);letter-spacing:1px;}
@@ -378,18 +400,52 @@
 
 <!-- TOP BAR -->
 <div id="topbar">
-  <div id="logo">DERIV<span>CHART</span></div>
-  <div id="symbol-selector" style="display:flex;gap:5px;flex-wrap:wrap;">
-    <button class="sym-btn active" data-symbol="R_10"     data-name="Volatility 10">V10</button>
-    <button class="sym-btn"       data-symbol="R_25"     data-name="Volatility 25">V25</button>
-    <button class="sym-btn"       data-symbol="R_50"     data-name="Volatility 50">V50</button>
-    <button class="sym-btn"       data-symbol="R_75"     data-name="Volatility 75">V75</button>
-    <button class="sym-btn"       data-symbol="R_100"    data-name="Volatility 100">V100</button>
-    <button class="sym-btn"       data-symbol="1HZ10V"   data-name="Volatility 10 (1s)">V10(1s)</button>
-    <button class="sym-btn"       data-symbol="1HZ100V"  data-name="Volatility 100 (1s)">V100(1s)</button>
-    <button class="sym-btn"       data-symbol="BOOM300N"  data-name="Boom 300">BOOM300</button>
-    <button class="sym-btn"       data-symbol="CRASH300N" data-name="Crash 300">CRASH300</button>
+  <div id="logo">FVG<span>FINDER</span></div>
+
+  <!-- SYMBOLS DROPDOWN BUTTON -->
+  <div style="position:relative;">
+    <button class="sym-btn active" id="sym-dropdown-btn" onclick="toggleSymbolDropdown()" style="display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:12px;">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" style="width:11px;height:11px;">
+        <circle cx="6" cy="6" r="4.5"/><line x1="6" y1="3" x2="6" y2="6.5"/><line x1="6" y1="6.5" x2="8" y2="8.5"/>
+      </svg>
+      <span id="sym-display">XAUUSD</span>
+      <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" style="width:9px;height:9px;" id="sym-arrow">
+        <polyline points="1,1 5,5 9,1"/>
+      </svg>
+    </button>
+
+    <!-- DROPDOWN MENU -->
+    <div id="sym-dropdown" style="
+      display:none; position:absolute; top:calc(100% + 4px); left:0; z-index:500;
+      background:var(--surface); border:1px solid var(--border); border-radius:6px;
+      min-width:180px; box-shadow:0 8px 32px rgba(0,0,0,.6);
+      overflow:hidden; animation:slideDown .15s ease;">
+      <div style="padding:6px 10px;font-size:9px;color:var(--muted);letter-spacing:1px;border-bottom:1px solid var(--border);">METALS</div>
+      <button class="sym-drop-item active" data-symbol="frxXAUUSD" data-name="XAU/USD" data-digits="2">🥇 XAUUSD — Gold</button>
+      <button class="sym-drop-item" data-symbol="frxXAGUSD" data-name="XAG/USD" data-digits="4">🥈 XAGUSD — Silver</button>
+      <div style="padding:6px 10px;font-size:9px;color:var(--muted);letter-spacing:1px;border-bottom:1px solid var(--border);border-top:1px solid var(--border);">FOREX MAJORS</div>
+      <button class="sym-drop-item" data-symbol="frxGBPUSD" data-name="GBP/USD" data-digits="5">🇬🇧 GBPUSD</button>
+      <button class="sym-drop-item" data-symbol="frxEURUSD" data-name="EUR/USD" data-digits="5">🇪🇺 EURUSD</button>
+      <button class="sym-drop-item" data-symbol="frxUSDJPY" data-name="USD/JPY" data-digits="3">🇯🇵 USDJPY</button>
+      <div style="padding:6px 10px;font-size:9px;color:var(--muted);letter-spacing:1px;border-bottom:1px solid var(--border);border-top:1px solid var(--border);">FOREX CROSSES</div>
+      <button class="sym-drop-item" data-symbol="frxEURJPY" data-name="EUR/JPY" data-digits="3">🇪🇺 EURJPY</button>
+      <button class="sym-drop-item" data-symbol="frxGBPJPY" data-name="GBP/JPY" data-digits="3">🇬🇧 GBPJPY</button>
+      <button class="sym-drop-item" data-symbol="frxEURGBP" data-name="EUR/GBP" data-digits="5">🇪🇺 EURGBP</button>
+    </div>
   </div>
+
+  <!-- TIMEFRAME BUTTONS -->
+  <div id="tf-selector" style="display:flex;gap:4px;align-items:center;">
+    <span style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-right:2px;">TF</span>
+    <button class="tf-btn" data-granularity="60"    data-label="1M">1M</button>
+    <button class="tf-btn" data-granularity="300"   data-label="5M">5M</button>
+    <button class="tf-btn" data-granularity="900"   data-label="15M">15M</button>
+    <button class="tf-btn" data-granularity="1800"  data-label="30M">30M</button>
+    <button class="tf-btn active" data-granularity="3600"  data-label="1H">1H</button>
+    <button class="tf-btn" data-granularity="14400" data-label="4H">4H</button>
+    <button class="tf-btn" data-granularity="86400" data-label="1D">1D</button>
+  </div>
+
   <div style="display:flex;align-items:center;gap:7px;">
     <div id="status-dot"></div>
     <span id="status-text">Connecting...</span>
@@ -657,8 +713,8 @@
 
 <!-- BOTTOM BAR -->
 <div id="bottombar">
-  <span id="sym-label-bottom">—</span>
-  <span>• 1 MIN</span>
+  <span id="sym-label-bottom">XAU/USD</span>
+  <span id="tf-label-bottom">• 1H</span>
   <span id="candle-count">0 candles</span>
   <div id="last-price-big">—</div>
   <div id="change-badge" class="badge-up">+0.00%</div>
@@ -676,7 +732,9 @@
 const APP_ID = "71255";
 const WS_URL = `wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`;
 
-let ws = null, candles = [], currentSymbol = "R_10", currentName = "Volatility 10";
+let ws = null, candles = [], currentSymbol = "frxXAUUSD", currentName = "XAU/USD";
+let currentGranularity = 3600;   // default 1H
+let currentDigits      = 2;      // decimal places per symbol (XAU=2, forex=5, JPY=3)
 
 // ═══════════════════════════════════════════════════════════════
 //  TOOL STATE
@@ -749,7 +807,7 @@ function placeZoneLine(price, zoneKey) {
   z.hlineId = h.id;
 
   // Update panel display
-  document.getElementById(`zone-${zoneKey}-price`).textContent = price.toFixed(4);
+  document.getElementById(`zone-${zoneKey}-price`).textContent = price.toFixed(currentDigits);
 
   // Reset draw state
   drawingZone = null;
@@ -941,7 +999,7 @@ function fireZoneAlert(zoneKey, currentPrice, zonePrice, dir="") {
   if (zoneKey === "green") {
     playGreenAlert();
     showToast("🟢", `GREEN ZONE CROSSED${dirLabel}`, "#00e676", "green-alert",
-      `Price ${currentPrice.toFixed(4)} crossed zone at ${zonePrice.toFixed(4)}`);
+      `Price ${currentPrice.toFixed(currentDigits)} crossed zone at ${zonePrice.toFixed(currentDigits)}`);
   }
 
   if (zoneKey === "orange") {
@@ -949,7 +1007,7 @@ function fireZoneAlert(zoneKey, currentPrice, zonePrice, dir="") {
     flash.className = "flash-orange";
     setTimeout(() => flash.className="", 700);
     showToast("🟠", `ORANGE ZONE CROSSED${dirLabel}`, "#ff9500", "orange-alert",
-      `Price ${currentPrice.toFixed(4)} crossed zone at ${zonePrice.toFixed(4)}`);
+      `Price ${currentPrice.toFixed(currentDigits)} crossed zone at ${zonePrice.toFixed(currentDigits)}`);
   }
 
   if (zoneKey === "red") {
@@ -961,7 +1019,7 @@ function fireZoneAlert(zoneKey, currentPrice, zonePrice, dir="") {
       if (++flashes >= 3) clearInterval(flashInterval);
     }, 500);
     showToast("🔴", `⚠ RED ZONE ALARM${dirLabel} ⚠`, "#ff3d5a", "red-alert",
-      `Price ${currentPrice.toFixed(4)} crossed DANGER zone at ${zonePrice.toFixed(4)}`, true);
+      `Price ${currentPrice.toFixed(currentDigits)} crossed DANGER zone at ${zonePrice.toFixed(currentDigits)}`, true);
   }
 }
 
@@ -1322,7 +1380,7 @@ function renderChart() {
     g.selectAll("line").attr("stroke","var(--border)");
   });
 
-  svg.select(".y-axis-g").call(d3.axisRight(yScale).ticks(8).tickFormat(d=>d.toFixed(4))).call(g=>{
+  svg.select(".y-axis-g").call(d3.axisRight(yScale).ticks(8).tickFormat(d=>d.toFixed(currentDigits))).call(g=>{
     g.select(".domain").attr("stroke","var(--border)");
     g.selectAll("text").attr("fill","var(--muted)").attr("font-family","Share Tech Mono,monospace").attr("font-size","10px");
     g.selectAll("line").attr("stroke","var(--border)");
@@ -1356,10 +1414,10 @@ function renderChart() {
   // Price label
   const py=yScale(last.close), isUp=last.close>=last.open;
   d3.select("#price-label-bg").style("display",null).attr("x",width-margin.right+2).attr("y",py-10).attr("fill",isUp?"var(--green)":"var(--red)");
-  d3.select("#price-label-text").style("display",null).attr("x",width-margin.right+2+(margin.right-2)/2).attr("y",py).attr("text-anchor","middle").attr("fill","#000").text(last.close.toFixed(4));
+  d3.select("#price-label-text").style("display",null).attr("x",width-margin.right+2+(margin.right-2)/2).attr("y",py).attr("text-anchor","middle").attr("fill","#000").text(last.close.toFixed(currentDigits));
 
   setOHLC(last);
-  document.getElementById("last-price-big").textContent=last.close.toFixed(4);
+  document.getElementById("last-price-big").textContent=last.close.toFixed(currentDigits);
   if(candles.length>1){
     const pct=((last.close-candles[0].open)/candles[0].open*100).toFixed(2);
     const badge=document.getElementById("change-badge");
@@ -1394,10 +1452,10 @@ function renderChart() {
 
 function setOHLC(c){
   if(!c)return;
-  document.getElementById("ohlc-o").textContent=c.open.toFixed(4);
-  document.getElementById("ohlc-h").textContent=c.high.toFixed(4);
-  document.getElementById("ohlc-l").textContent=c.low.toFixed(4);
-  document.getElementById("ohlc-c").textContent=c.close.toFixed(4);
+  document.getElementById("ohlc-o").textContent=c.open.toFixed(currentDigits);
+  document.getElementById("ohlc-h").textContent=c.high.toFixed(currentDigits);
+  document.getElementById("ohlc-l").textContent=c.low.toFixed(currentDigits);
+  document.getElementById("ohlc-c").textContent=c.close.toFixed(currentDigits);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1418,7 +1476,7 @@ function addHline(priceValue, color, isZone=false, zoneKey=null) {
   labelEl.style.borderColor=color; labelEl.style.color=color;
   labelEl.innerHTML=`
     ${isZone?`<span class="zone-tag">${zoneKey}</span>`:""}
-    <span class="price-text">${priceValue.toFixed(4)}</span>
+    <span class="price-text">${priceValue.toFixed(currentDigits)}</span>
     <span class="del-btn" title="Remove">✕</span>
   `;
   overlay.appendChild(labelEl);
@@ -1453,7 +1511,7 @@ function positionHline(h) {
   h.lineEl.style("display",null).attr("y1",y).attr("y2",y);
   h.labelEl.style.display="";
   h.labelEl.style.top=y+"px";
-  h.labelEl.querySelector(".price-text").textContent=h.price.toFixed(4);
+  h.labelEl.querySelector(".price-text").textContent=h.price.toFixed(currentDigits);
 }
 
 function refreshHlines(){ hlines.forEach(positionHline); }
@@ -1491,7 +1549,7 @@ document.addEventListener("mousemove",e=>{
       if(h.isZone&&h.zoneKey){
         zones[h.zoneKey].price=newPrice;
         zones[h.zoneKey].triggered=false;
-        document.getElementById(`zone-${h.zoneKey}-price`).textContent=newPrice.toFixed(4);
+        document.getElementById(`zone-${h.zoneKey}-price`).textContent=newPrice.toFixed(currentDigits);
       }
       positionHline(h);
     }
@@ -1573,7 +1631,7 @@ function onMouseMove(event){
     svg.selectAll(".ghost-price").data([1]).join("text").attr("class","ghost-price")
       .attr("x",width-margin.right+4).attr("y",my).attr("dominant-baseline","middle")
       .attr("font-family","Share Tech Mono,monospace").attr("font-size","10px")
-      .attr("fill",col).attr("pointer-events","none").text(ghostPrice.toFixed(4));
+      .attr("fill",col).attr("pointer-events","none").text(ghostPrice.toFixed(currentDigits));
     tooltip.style.opacity="0";
     return;
   } else {
@@ -1596,11 +1654,11 @@ function onMouseMove(event){
   const col=profit>=0?"#00e676":"#ff3d5a";
   tooltip.innerHTML=`
     <div style="color:var(--muted);margin-bottom:4px;font-size:10px;">${timeStr}</div>
-    <div>O <span style="color:#e0eaf5">${best.open.toFixed(4)}</span></div>
-    <div>H <span style="color:#00e676">${best.high.toFixed(4)}</span></div>
-    <div>L <span style="color:#ff3d5a">${best.low.toFixed(4)}</span></div>
-    <div>C <span style="color:#e0eaf5">${best.close.toFixed(4)}</span></div>
-    <div style="margin-top:4px;color:${col}">${profit>=0?"+":""}${profit.toFixed(4)} (${pct}%)</div>
+    <div>O <span style="color:#e0eaf5">${best.open.toFixed(currentDigits)}</span></div>
+    <div>H <span style="color:#00e676">${best.high.toFixed(currentDigits)}</span></div>
+    <div>L <span style="color:#ff3d5a">${best.low.toFixed(currentDigits)}</span></div>
+    <div>C <span style="color:#e0eaf5">${best.close.toFixed(currentDigits)}</span></div>
+    <div style="margin-top:4px;color:${col}">${profit>=0?"+":""}${profit.toFixed(currentDigits)} (${pct}%)</div>
   `;
   tooltip.style.opacity="1";
   const cr=document.getElementById("chart-container").getBoundingClientRect();
@@ -1632,28 +1690,44 @@ function connect(){
 function requestHistory(){
   candles=[];
   document.getElementById("loading").classList.remove("hidden");
-  ws.send(JSON.stringify({ticks_history:currentSymbol,adjust_start_time:1,count:200,end:"latest",granularity:60,style:"candles",subscribe:1}));
+  ws.send(JSON.stringify({
+    ticks_history: currentSymbol,
+    adjust_start_time: 1,
+    count: 500,
+    end: "latest",
+    granularity: currentGranularity,
+    style: "candles",
+    subscribe: 1
+  }));
 }
 
 function handleMessage(msg){
-  if(msg.error){console.warn(msg.error.message);return;}
+  if(msg.error){ console.warn(msg.error.message); return; }
   if(msg.msg_type==="candles"){
-    candles=(msg.candles||[]).map(c=>({epoch:c.epoch,open:parseFloat(c.open),high:parseFloat(c.high),low:parseFloat(c.low),close:parseFloat(c.close)}));
+    candles=(msg.candles||[]).map(c=>({
+      epoch:c.epoch, open:parseFloat(c.open), high:parseFloat(c.high),
+      low:parseFloat(c.low), close:parseFloat(c.close)
+    }));
     prevPrice = null;
     document.getElementById("loading").classList.add("hidden");
     renderChart();
   }
   if(msg.msg_type==="ohlc"){
     const o=msg.ohlc;
-    if(!o||o.symbol!==currentSymbol)return;
-    const candle={epoch:o.open_time,open:parseFloat(o.open),high:parseFloat(o.high),low:parseFloat(o.low),close:parseFloat(o.close)};
+    if(!o || o.symbol!==currentSymbol) return;
+    // Ignore ticks that belong to a different granularity
+    if(o.granularity && parseInt(o.granularity) !== currentGranularity) return;
+    const candle={
+      epoch:o.open_time, open:parseFloat(o.open), high:parseFloat(o.high),
+      low:parseFloat(o.low), close:parseFloat(o.close)
+    };
     const last=candles[candles.length-1];
     if(last&&last.epoch===candle.epoch) candles[candles.length-1]=candle;
-    else if(!last||candle.epoch>last.epoch){candles.push(candle);if(candles.length>500)candles.shift();}
+    else if(!last||candle.epoch>last.epoch){ candles.push(candle); if(candles.length>500)candles.shift(); }
     renderChart();
     const el=document.getElementById("last-price-big");
     el.style.color=candle.close>=candle.open?"var(--green)":"var(--red)";
-    setTimeout(()=>{el.style.color="var(--text)";},400);
+    setTimeout(()=>{ el.style.color="var(--text)"; },400);
   }
 }
 
@@ -1663,16 +1737,68 @@ function setStatus(state,text){
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  SYMBOL SWITCHING
+//  SYMBOL DROPDOWN
 // ═══════════════════════════════════════════════════════════════
-document.querySelectorAll(".sym-btn").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".sym-btn").forEach(b=>b.classList.remove("active"));
+let symDropOpen = false;
+
+function toggleSymbolDropdown() {
+  symDropOpen = !symDropOpen;
+  const dd = document.getElementById("sym-dropdown");
+  const arrow = document.getElementById("sym-arrow");
+  dd.style.display = symDropOpen ? "block" : "none";
+  arrow.style.transform = symDropOpen ? "rotate(180deg)" : "";
+}
+
+// Close dropdown when clicking outside
+document.addEventListener("click", e => {
+  if (!e.target.closest("#sym-dropdown") && !e.target.closest("#sym-dropdown-btn")) {
+    symDropOpen = false;
+    document.getElementById("sym-dropdown").style.display = "none";
+    const arrow = document.getElementById("sym-arrow");
+    if (arrow) arrow.style.transform = "";
+  }
+});
+
+document.querySelectorAll(".sym-drop-item").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".sym-drop-item").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    currentSymbol=btn.dataset.symbol; currentName=btn.dataset.name;
-    document.getElementById("sym-label-bottom").textContent=currentName;
-    ["ohlc-o","ohlc-h","ohlc-l","ohlc-c"].forEach(id=>document.getElementById(id).textContent="—");
-    document.getElementById("last-price-big").textContent="—";
+    currentSymbol  = btn.dataset.symbol;
+    currentName    = btn.dataset.name;
+    currentDigits  = parseInt(btn.dataset.digits || "5");
+
+    // Update dropdown button label
+    document.getElementById("sym-display").textContent = btn.textContent.trim().split(" ")[1] || currentName;
+
+    // Close dropdown
+    symDropOpen = false;
+    document.getElementById("sym-dropdown").style.display = "none";
+    document.getElementById("sym-arrow").style.transform = "";
+
+    document.getElementById("sym-label-bottom").textContent = currentName;
+    ["ohlc-o","ohlc-h","ohlc-l","ohlc-c"].forEach(id => document.getElementById(id).textContent = "—");
+    document.getElementById("last-price-big").textContent = "—";
+    prevPrice = null;
+    viewCount = VIEW_DEF; viewOffset = 0;
+    yPanOffset = 0; yZoomFactor = 1.0;
+    initChart(); requestHistory();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  TIMEFRAME SWITCHING
+// ═══════════════════════════════════════════════════════════════
+document.querySelectorAll(".tf-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tf-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentGranularity = parseInt(btn.dataset.granularity);
+
+    // Update bottom bar timeframe label
+    document.getElementById("tf-label-bottom").textContent = "• " + btn.dataset.label;
+
+    ["ohlc-o","ohlc-h","ohlc-l","ohlc-c"].forEach(id => document.getElementById(id).textContent = "—");
+    document.getElementById("last-price-big").textContent = "—";
     prevPrice = null;
     viewCount = VIEW_DEF; viewOffset = 0;
     yPanOffset = 0; yZoomFactor = 1.0;
@@ -1807,7 +1933,7 @@ function buildPhonePanel(tab) {
   if (tab === "zone") {
     const zoneRow = (key, color, icon, label, desc) => {
       const z = zones[key];
-      const priceStr = z.price !== null ? z.price.toFixed(4) : "not set";
+      const priceStr = z.price !== null ? z.price.toFixed(currentDigits) : "not set";
       const armed    = z.armed && z.price !== null;
       return `
         <div class="pp-zone-row">
@@ -1941,7 +2067,8 @@ const _origPlaceZone = placeZoneLine;
 // ═══════════════════════════════════════════════════════════════
 //  BOOT
 // ═══════════════════════════════════════════════════════════════
-document.getElementById("sym-label-bottom").textContent=currentName;
+document.getElementById("sym-label-bottom").textContent = currentName;
+document.getElementById("tf-label-bottom").textContent  = "• 1H";
 initChart();
 connect();
 
