@@ -10,8 +10,7 @@
 <meta name="theme-color" content="#0f1318">
 <meta name="description" content="Live Deriv candlestick chart with zone alerts">
 <title>Deriv FVG Finder</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oxanium:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -234,8 +233,18 @@
   body.phone-mode #toolbar       { display:none !important; }
   body.phone-mode #zone-panel    { display:none !important; }
   body.phone-mode #fvg-info      { display:none !important; }
-  body.phone-mode #topbar        { padding:5px 10px; }
+  body.phone-mode #topbar        { padding:5px 10px; flex-wrap:nowrap; overflow:hidden; gap:6px; }
   body.phone-mode #chart-wrap    { padding:4px 4px 0; }
+  /* Hide OHLC bar in phone — too wide for a small screen */
+  body.phone-mode #ohlc-bar      { display:none !important; }
+  /* Hide desktop TF selector — use dock panel instead */
+  body.phone-mode #tf-selector   { display:none !important; }
+  /* Hide status text, keep the dot */
+  body.phone-mode #status-text   { display:none; }
+  /* Compact logo */
+  body.phone-mode #logo          { font-size:14px; letter-spacing:1px; flex-shrink:0; }
+  /* Status dot group shrinks */
+  body.phone-mode #topbar > div:nth-child(3) { flex-shrink:0; }
 
   /* The phone dock — fixed at bottom above bottombar */
   #phone-dock {
@@ -258,23 +267,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 2px;
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 7px 10px;
+    padding: 6px 4px;
     cursor: pointer;
     flex: 1;
-    max-width: 68px;
+    min-width: 0;
+    max-width: 58px;
     color: var(--muted);
     font-family: 'Oxanium', sans-serif;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 600;
-    letter-spacing: .3px;
+    letter-spacing: .2px;
     transition: all .15s;
     position: relative;
   }
-  .dock-btn svg { width: 18px; height: 18px; }
+  .dock-btn svg { width: 16px; height: 16px; }
   .dock-btn:active { transform: scale(.93); }
   .dock-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(255,196,0,.1); }
   .dock-btn.active-blue { border-color: var(--accent); color: var(--accent); background: rgba(0,199,255,.1); }
@@ -700,6 +710,25 @@
     Color
   </button>
 
+  <button class="dock-btn" id="dock-tf" onclick="dockTap('tf')">
+    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <rect x="2" y="3" width="14" height="12" rx="1.5"/>
+      <line x1="2" y1="7" x2="16" y2="7"/>
+      <line x1="6" y1="7" x2="6" y2="15"/>
+    </svg>
+    TF
+  </button>
+
+  <!-- EXIT PHONE MODE -->
+  <button class="dock-btn" id="dock-desktop" onclick="togglePhoneMode()" style="border-color:rgba(56,189,248,.4);color:#38bdf8;">
+    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <rect x="1" y="3" width="16" height="11" rx="1.5"/>
+      <line x1="5" y1="16" x2="13" y2="16" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="9" y1="14" x2="9" y2="16"/>
+    </svg>
+    Desktop
+  </button>
+
 </div>
 
 <!-- CHART -->
@@ -735,6 +764,7 @@ const WS_URL = `wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`;
 let ws = null, candles = [], currentSymbol = "frxXAUUSD", currentName = "XAU/USD";
 let currentGranularity = 3600;   // default 1H
 let currentDigits      = 2;      // decimal places per symbol (XAU=2, forex=5, JPY=3)
+let currentSubId       = null;   // active subscription ID — used to forget before re-sub
 
 // ═══════════════════════════════════════════════════════════════
 //  TOOL STATE
@@ -1140,46 +1170,6 @@ function initChart() {
     .on("mousemove",onMouseMove)
     .on("mouseleave",onMouseLeave)
     .on("click",onChartClick)
-    // ── Scroll wheel / trackpad ──
-    .on("wheel", function(event) {
-      event.preventDefault();
-      const mouseX = d3.pointer(event)[0];
-      const chartW = width - margin.left - margin.right;
-
-      // If cursor is in the right 80px (Y axis area) → zoom price axis
-      if (mouseX > width - margin.right - 10) {
-        const zoomIn = event.deltaY < 0;
-        yZoomFactor = Math.max(0.2, Math.min(20, yZoomFactor * (zoomIn ? 0.85 : 1.18)));
-        renderChart();
-        return;
-      }
-
-      // ctrlKey=true → pinch-to-zoom gesture → ZOOM X
-      if (event.ctrlKey) {
-        const zoomIn = event.deltaY < 0;
-        const frac   = Math.max(0, Math.min(1, (mouseX - margin.left) / chartW));
-        zoomBy(zoomIn ? 0.75 : 1.33, frac);
-        return;
-      }
-
-      const absX = Math.abs(event.deltaX);
-      const absY = Math.abs(event.deltaY);
-
-      if (absX > absY) {
-        // 2-finger horizontal swipe → PAN X
-        const pxPerCandle = Math.max(1, chartW / viewCount);
-        const delta       = Math.round(event.deltaX / pxPerCandle);
-        viewOffset        = viewOffset + delta;
-        clampViewOffset();
-        renderChart();
-        updateZoomLabel();
-      } else {
-        // 2-finger vertical swipe → ZOOM X
-        const zoomIn = event.deltaY < 0;
-        const frac   = Math.max(0, Math.min(1, (mouseX - margin.left) / chartW));
-        zoomBy(zoomIn ? 0.8 : 1.25, frac);
-      }
-    })
     // ── Click+drag pan ──
     .on("mousedown", function(event) {
       if (activeTool !== "pointer") return;
@@ -1193,6 +1183,55 @@ function initChart() {
     });
 
   refreshHlines();
+
+  // ── Wheel / trackpad: must use native addEventListener with passive:false ──
+  // D3's .on("wheel") registers as passive in modern browsers, silently
+  // ignoring preventDefault() which breaks zoom entirely.
+  // We remove any previously attached listener before adding a new one.
+  const svgNode = svg.node();
+  if (svgNode._wheelHandler) svgNode.removeEventListener("wheel", svgNode._wheelHandler);
+  svgNode._wheelHandler = function(event) {
+    event.preventDefault();
+    const rect2 = svgNode.getBoundingClientRect();
+    const mouseX = event.clientX - rect2.left;
+    const chartW = width - margin.left - margin.right;
+
+    // Right edge (Y-axis area) → zoom price axis vertically
+    if (mouseX > width - margin.right - 10) {
+      const zoomIn = event.deltaY < 0;
+      yZoomFactor = Math.max(0.2, Math.min(20, yZoomFactor * (zoomIn ? 0.85 : 1.18)));
+      renderChart();
+      return;
+    }
+
+    // ctrlKey = pinch-to-zoom gesture on trackpad → zoom X axis
+    if (event.ctrlKey) {
+      const zoomIn = event.deltaY < 0;
+      const frac   = Math.max(0, Math.min(1, (mouseX - margin.left) / chartW));
+      zoomBy(zoomIn ? 0.75 : 1.33, frac);
+      return;
+    }
+
+    const absX = Math.abs(event.deltaX);
+    const absY = Math.abs(event.deltaY);
+
+    if (absX > absY) {
+      // 2-finger horizontal swipe → pan left/right
+      // Negate delta: swiping left (deltaX > 0) = see newer candles = decrease viewOffset
+      const pxPerCandle = Math.max(1, chartW / viewCount);
+      const delta       = Math.round(event.deltaX / pxPerCandle);
+      viewOffset        = viewOffset - delta;
+      clampViewOffset();
+      renderChart();
+      updateZoomLabel();
+    } else {
+      // Vertical scroll / scroll wheel → zoom X axis
+      const zoomIn = event.deltaY < 0;
+      const frac   = Math.max(0, Math.min(1, (mouseX - margin.left) / chartW));
+      zoomBy(zoomIn ? 0.8 : 1.25, frac);
+    }
+  };
+  svgNode.addEventListener("wheel", svgNode._wheelHandler, { passive: false });
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1680,16 +1719,28 @@ function onMouseLeave(){
 // ═══════════════════════════════════════════════════════════════
 function connect(){
   if(ws){ws.onclose=null;ws.close();}
+  currentSubId = null;
   ws=new WebSocket(WS_URL);
   ws.onopen=()=>{setStatus("live","LIVE");requestHistory();};
   ws.onmessage=e=>handleMessage(JSON.parse(e.data));
   ws.onerror=()=>setStatus("error","ERROR");
-  ws.onclose=()=>{setStatus("off","RECONNECTING...");setTimeout(connect,3000);};
+  ws.onclose=()=>{setStatus("off","RECONNECTING...");currentSubId=null;setTimeout(connect,3000);};
 }
 
 function requestHistory(){
   candles=[];
-  document.getElementById("loading").classList.remove("hidden");
+  const loadEl = document.getElementById("loading");
+  loadEl.classList.remove("hidden");
+  loadEl.querySelector("p").textContent = "LOADING CANDLES...";
+
+  // ── Cancel previous subscription before creating a new one ──
+  // Without this, Deriv API returns AlreadySubscribed and the loading
+  // spinner never goes away.
+  if(currentSubId && ws && ws.readyState===WebSocket.OPEN){
+    ws.send(JSON.stringify({forget: currentSubId}));
+    currentSubId = null;
+  }
+
   ws.send(JSON.stringify({
     ticks_history: currentSymbol,
     adjust_start_time: 1,
@@ -1702,8 +1753,43 @@ function requestHistory(){
 }
 
 function handleMessage(msg){
-  if(msg.error){ console.warn(msg.error.message); return; }
+  if(msg.error){
+    console.warn(msg.error.code, msg.error.message);
+    const loadEl = document.getElementById("loading");
+
+    // ── AlreadySubscribed: force-forget all candle subs then retry ──
+    if(msg.error.code === "AlreadySubscribed"){
+      if(ws && ws.readyState===WebSocket.OPEN)
+        ws.send(JSON.stringify({forget_all:"candles"}));
+      currentSubId = null;
+      setTimeout(requestHistory, 400);
+      return;
+    }
+
+    // ── Market closed: fetch history without subscribe ──
+    if(msg.error.code === "MarketIsClosed"){
+      loadEl.querySelector("p").textContent = "MARKET CLOSED — Loading historical data...";
+      if(ws && ws.readyState===WebSocket.OPEN){
+        ws.send(JSON.stringify({
+          ticks_history: currentSymbol,
+          adjust_start_time: 1,
+          count: 500,
+          end: "latest",
+          granularity: currentGranularity,
+          style: "candles"
+        }));
+      }
+      return;
+    }
+
+    // ── Generic error: show message instead of infinite spinner ──
+    loadEl.querySelector("p").textContent = "⚠ " + (msg.error.message || "Connection error");
+    return;
+  }
+
   if(msg.msg_type==="candles"){
+    // Save sub ID so we can forget it before next request
+    if(msg.subscription) currentSubId = msg.subscription.id;
     candles=(msg.candles||[]).map(c=>({
       epoch:c.epoch, open:parseFloat(c.open), high:parseFloat(c.high),
       low:parseFloat(c.low), close:parseFloat(c.close)
@@ -1713,6 +1799,7 @@ function handleMessage(msg){
     renderChart();
   }
   if(msg.msg_type==="ohlc"){
+    if(msg.subscription) currentSubId = msg.subscription.id;
     const o=msg.ohlc;
     if(!o || o.symbol!==currentSymbol) return;
     // Ignore ticks that belong to a different granularity
@@ -1781,7 +1868,8 @@ document.querySelectorAll(".sym-drop-item").forEach(btn => {
     prevPrice = null;
     viewCount = VIEW_DEF; viewOffset = 0;
     yPanOffset = 0; yZoomFactor = 1.0;
-    initChart(); requestHistory();
+    initChart();
+    requestHistory(); // requestHistory now handles forget internally
   });
 });
 
@@ -2006,6 +2094,22 @@ function buildPhonePanel(tab) {
        </div>`;
   }
 
+  if (tab === "tf") {
+    const tfs = [
+      [60,"1M"],[300,"5M"],[900,"15M"],[1800,"30M"],[3600,"1H"],[14400,"4H"],[86400,"1D"]
+    ];
+    const tfBtns = tfs.map(([g,label]) => {
+      const active = currentGranularity === g;
+      return `<button class="zone-set-btn" style="flex:1;padding:10px;font-size:12px;${
+        active ? "background:rgba(255,196,0,.14);border-color:var(--gold);color:var(--gold);" : ""
+      }" onclick="ppSetTimeframe(${g},'${label}')">${label}</button>`;
+    }).join("");
+    return hdr("🕐","TIMEFRAME","#ffc400") +
+      `<div class="pp-row" style="gap:6px;flex-wrap:wrap;padding:10px 14px;">
+         ${tfBtns}
+       </div>`;
+  }
+
   if (tab === "color") {
     const colorSwatches = [
       ["#ffc400","Gold"],["#00c7ff","Blue"],["#00e676","Green"],
@@ -2026,6 +2130,23 @@ function buildPhonePanel(tab) {
   }
 
   return "";
+}
+
+// Called from TF dock panel to switch timeframe
+function ppSetTimeframe(gran, label) {
+  document.querySelectorAll(".tf-btn").forEach(b => b.classList.remove("active"));
+  const tfBtn = document.querySelector(`.tf-btn[data-granularity="${gran}"]`);
+  if (tfBtn) tfBtn.classList.add("active");
+  currentGranularity = gran;
+  document.getElementById("tf-label-bottom").textContent = "• " + label;
+  ["ohlc-o","ohlc-h","ohlc-l","ohlc-c"].forEach(id => document.getElementById(id).textContent = "—");
+  document.getElementById("last-price-big").textContent = "—";
+  prevPrice = null;
+  viewCount = VIEW_DEF; viewOffset = 0;
+  yPanOffset = 0; yZoomFactor = 1.0;
+  closePhonePanel();
+  initChart();
+  requestHistory();
 }
 
 // Called from zone "Set Line" inside phone panel
@@ -2210,13 +2331,7 @@ connect();
 // ═══════════════════════════════════════════════════════════════
 //  SERVICE WORKER  (PWA offline support)
 // ═══════════════════════════════════════════════════════════════
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(r => console.log('SW registered:', r.scope))
-      .catch(e => console.log('SW failed:', e));
-  });
-}
+// (PWA service worker not used in standalone HTML mode)
 
 </script>
 </body>
