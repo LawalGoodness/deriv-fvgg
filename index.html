@@ -284,7 +284,22 @@
   @keyframes errShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
   /* ═══ PHONE MODE ════════════════════════════════════════════ */
-  /* When phone mode is active, hide the desktop bars */
+  /* Y-axis touch hint on phone */
+  body.phone-mode #y-axis-touch-hint {
+    position: absolute;
+    top: 0; right: 0;
+    width: 52px; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    z-index: 5;
+  }
+  body.phone-mode #y-axis-touch-hint::after {
+    content: '↕';
+    font-size: 10px;
+    color: rgba(255,255,255,.15);
+    writing-mode: vertical-rl;
+    letter-spacing: 3px;
+  }
   body.phone-mode #toolbar       { display:none !important; }
   body.phone-mode #zone-panel    { display:none !important; }
   body.phone-mode #fvg-info      { display:none !important; }
@@ -733,6 +748,7 @@
   <div id="chart-container">
     <svg id="chart-svg"></svg>
     <div id="hlines-overlay"></div>
+    <div id="y-axis-touch-hint"></div>
     <div id="loading"><div class="spinner"></div><p>LOADING CANDLES...</p></div>
   </div>
 </div>
@@ -818,6 +834,8 @@ function toggleZonePanel() {
   zonePanelOpen = !zonePanelOpen;
   document.getElementById("zone-panel").classList.toggle("open", zonePanelOpen);
   document.getElementById("btn-zone").classList.toggle("active", zonePanelOpen);
+  // Let the DOM reflow first, then resize chart to fill new space
+  requestAnimationFrame(() => { initChart(); renderChart(); });
 }
 
 function startZoneDraw(zoneKey) {
@@ -1062,7 +1080,8 @@ function dismissToast(toast) {
 //  D3 CHART
 // ═══════════════════════════════════════════════════════════════
 const svg    = d3.select("#chart-svg");
-const margin = { top:18, right:72, bottom:34, left:10 };
+// Wider right margin on phone = bigger Y-axis touch target
+let margin = { top:18, right:72, bottom:34, left:10 };
 let width=0, height=0, xScale, yScale;
 let chartG, candleG, crosshairX, crosshairY;
 
@@ -1122,6 +1141,8 @@ function updateZoomLabel() {
 }
 
 function initChart() {
+  // Wider Y-axis area on phone for easier touch target
+  margin.right = window.innerWidth <= 600 ? 64 : 72;
   svg.selectAll("*").remove();
   const rect = document.getElementById("chart-container").getBoundingClientRect();
   width=rect.width; height=rect.height;
@@ -1265,7 +1286,7 @@ function toggleFVG() {
   fvgActive = !fvgActive;
   document.getElementById("btn-fvg").classList.toggle("active", fvgActive);
   document.getElementById("fvg-info").classList.toggle("visible", fvgActive);
-  renderChart();
+  requestAnimationFrame(() => { initChart(); renderChart(); });
 }
 
 /**
@@ -2263,12 +2284,18 @@ connect();
     return best;
   }
 
+  // Track whether single touch started in the Y-axis area (right edge)
+  let touchIsYZoom    = false;
+  let yZoomTouchStartY = 0;
+  let yZoomTouchStartFactor = 1.0;
+
   container.addEventListener("touchstart", e => {
     e.preventDefault();
     const ts = getTouches(e);
     touches = {};
     ts.forEach(t => touches[t.identifier] = t);
     touchDragHlineId = null;
+    touchIsYZoom     = false;
 
     // If drag mode was activated from popup, hijack next single touch as drag
     if (draggingHline !== null && ts.length === 1) {
@@ -2280,6 +2307,17 @@ connect();
     }
 
     if (ts.length === 1) {
+      const rect   = container.getBoundingClientRect();
+      const touchX = ts[0].clientX - rect.left;
+
+      // ── Right edge (Y-axis area): single finger → price zoom ──
+      if (touchX > width - margin.right) {
+        touchIsYZoom          = true;
+        yZoomTouchStartY      = ts[0].clientY;
+        yZoomTouchStartFactor = yZoomFactor;
+        return;
+      }
+
       // Check if finger is near a zone line — track it, open popup on tap
       const nearHline = findHlineNear(ts[0].clientY);
       if (nearHline) {
@@ -2307,6 +2345,15 @@ connect();
   container.addEventListener("touchmove", e => {
     e.preventDefault();
     const ts = getTouches(e);
+
+    // ── Y-axis price zoom (single finger on right edge) ──
+    if (touchIsYZoom && ts.length === 1) {
+      const dy = ts[0].clientY - yZoomTouchStartY;
+      // drag up (dy < 0) = zoom in (tighter price range), drag down = zoom out
+      yZoomFactor = Math.max(0.2, Math.min(20, yZoomTouchStartFactor * Math.pow(1.012, dy)));
+      renderChart();
+      return;
+    }
 
     // ── Zone line drag (only if popup "Drag" was chosen) ──
     if (touchDragHlineId !== null && ts.length === 1) {
@@ -2405,6 +2452,7 @@ connect();
 
   container.addEventListener("touchend", e => {
     e.preventDefault();
+    touchIsYZoom     = false;
     const ts = getTouches(e);
     if (ts.length < 2) lastPinchDist = null;
     if (ts.length === 1) {
