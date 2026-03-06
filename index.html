@@ -201,6 +201,63 @@
   .hline-label-box.zone-line{font-size:10px;padding:1px 7px;border-width:2px;}
   .hline-label-box.zone-line .zone-tag{font-size:8px;letter-spacing:.5px;opacity:.7;text-transform:uppercase;}
 
+  /* ── Zone line action popup ── */
+  #zone-line-popup {
+    position: fixed;
+    z-index: 9000;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    min-width: 220px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.7);
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    animation: popIn .15s ease;
+  }
+  #zone-line-popup.open { display: flex; }
+  @keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+  #zone-line-popup .popup-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .5px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  #zone-line-popup .popup-row {
+    display: flex; gap: 8px; align-items: center;
+  }
+  #zone-line-popup .popup-btn {
+    flex: 1; background: var(--panel); border: 1px solid var(--border);
+    color: var(--muted); padding: 9px 8px; border-radius: 6px;
+    cursor: pointer; font-family: 'Oxanium', sans-serif;
+    font-size: 11px; font-weight: 600; transition: all .15s;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  #zone-line-popup .popup-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #zone-line-popup .popup-btn.drag-btn:hover { border-color: var(--gold); color: var(--gold); }
+  #zone-line-popup .popup-price-row {
+    display: flex; gap: 6px; align-items: center;
+  }
+  #zone-line-popup input[type="number"] {
+    flex: 1; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 10px; border-radius: 6px;
+    font-family: 'Share Tech Mono', monospace; font-size: 14px;
+    outline: none; -webkit-user-select: text; user-select: text;
+  }
+  #zone-line-popup input[type="number"]:focus { border-color: var(--accent); }
+  #zone-line-popup .confirm-btn {
+    background: rgba(0,199,255,.15); border: 1px solid var(--accent);
+    color: var(--accent); padding: 8px 14px; border-radius: 6px;
+    cursor: pointer; font-family: 'Oxanium', sans-serif;
+    font-size: 11px; font-weight: 700; white-space: nowrap;
+  }
+  #zone-line-popup .confirm-btn:active { background: rgba(0,199,255,.3); }
+  #zone-line-popup .popup-close {
+    position: absolute; top: 10px; right: 12px;
+    background: none; border: none; color: var(--muted);
+    font-size: 16px; cursor: pointer; line-height: 1; padding: 2px 4px;
+  }
+  #zone-line-popup .popup-close:hover { color: var(--text); }
+
   /* BOTTOM BAR */
   #bottombar{display:flex;align-items:center;gap:18px;padding:5px 14px;background:var(--surface);border-top:1px solid var(--border);font-size:11px;color:var(--muted);font-family:'Share Tech Mono',monospace;flex-shrink:0;}
   #last-price-big{font-size:19px;font-weight:700;font-family:'Share Tech Mono',monospace;margin-left:auto;color:var(--text);transition:color .3s;}
@@ -437,12 +494,15 @@
   <!-- TIMEFRAME BUTTONS -->
   <div id="tf-selector" style="display:flex;gap:4px;align-items:center;">
     <span style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-right:2px;">TF</span>
-    <button class="tf-btn" data-granularity="60"     data-label="1M">1M</button>
-    <button class="tf-btn" data-granularity="900"    data-label="15M">15M</button>
-    <button class="tf-btn active" data-granularity="3600"   data-label="1H">1H</button>
-    <button class="tf-btn" data-granularity="14400"  data-label="4H">4H</button>
-    <button class="tf-btn" data-granularity="86400"  data-label="1D">1D</button>
-    <button class="tf-btn" data-granularity="604800" data-label="1W">1W</button>
+    <button class="tf-btn" data-granularity="60"      data-label="1M">1M</button>
+    <button class="tf-btn" data-granularity="300"     data-label="5M">5M</button>
+    <button class="tf-btn" data-granularity="900"     data-label="15M">15M</button>
+    <button class="tf-btn active" data-granularity="3600"    data-label="1H">1H</button>
+    <button class="tf-btn" data-granularity="14400"   data-label="4H">4H</button>
+    <button class="tf-btn" data-granularity="86400"   data-label="1D">1D</button>
+    <button class="tf-btn" data-granularity="345600"  data-label="4D">4D</button>
+    <button class="tf-btn" data-granularity="604800"  data-label="1W">1W</button>
+    <button class="tf-btn" data-granularity="2592000" data-label="1MO">1MO</button>
   </div>
 
   <div style="display:flex;align-items:center;gap:7px;">
@@ -553,36 +613,33 @@
   <div class="zone-row">
     <div class="zone-dot" style="background:#00e676;"></div>
     <span class="zone-name green">GREEN</span>
-    <span class="zone-desc">🔔 Notification when price crosses this line in its stacked direction</span>
+    <span class="zone-desc">🔔 Notification when price crosses this line</span>
     <button class="zone-set-btn" id="zone-green-btn" onclick="startZoneDraw('green')">Set Line</button>
     <div class="zone-price-display" id="zone-green-price" style="color:var(--green);">not set</div>
     <button class="zone-clear-btn" onclick="clearZone('green')">✕</button>
     <span class="zone-status-badge badge-off" id="zone-green-badge">OFF</span>
-    <button class="zone-toggle" id="zone-green-toggle" onclick="toggleZone('green')">ENABLE</button>
   </div>
 
   <!-- ORANGE ZONE ROW -->
   <div class="zone-row">
     <div class="zone-dot" style="background:#ff9500;"></div>
     <span class="zone-name orange">ORANGE</span>
-    <span class="zone-desc">🔊 Sound + notification when price crosses this line in its stacked direction</span>
+    <span class="zone-desc">🔊 Sound + notification when price crosses</span>
     <button class="zone-set-btn" id="zone-orange-btn" onclick="startZoneDraw('orange')">Set Line</button>
     <div class="zone-price-display" id="zone-orange-price" style="color:var(--orange);">not set</div>
     <button class="zone-clear-btn" onclick="clearZone('orange')">✕</button>
     <span class="zone-status-badge badge-off" id="zone-orange-badge">OFF</span>
-    <button class="zone-toggle" id="zone-orange-toggle" onclick="toggleZone('orange')">ENABLE</button>
   </div>
 
   <!-- RED ZONE ROW -->
   <div class="zone-row">
     <div class="zone-dot" style="background:#ff3d5a;"></div>
     <span class="zone-name red">RED</span>
-    <span class="zone-desc">🚨 Buzzing alarm + screen flash when price crosses this line in its stacked direction</span>
+    <span class="zone-desc">🚨 Alarm + screen flash when price crosses</span>
     <button class="zone-set-btn" id="zone-red-btn" onclick="startZoneDraw('red')">Set Line</button>
     <div class="zone-price-display" id="zone-red-price" style="color:var(--red);">not set</div>
     <button class="zone-clear-btn" onclick="clearZone('red')">✕</button>
     <span class="zone-status-badge badge-off" id="zone-red-badge">OFF</span>
-    <button class="zone-toggle" id="zone-red-toggle" onclick="toggleZone('red')">ENABLE</button>
   </div>
 
 </div>
@@ -694,6 +751,34 @@
 <!-- SCREEN FLASH -->
 <div id="screen-flash"></div>
 
+<!-- ═══ ZONE LINE ACTION POPUP ════════════════════════════════ -->
+<div id="zone-line-popup" style="position:fixed;z-index:9000;">
+  <button class="popup-close" onclick="closeZonePopup()">✕</button>
+  <div class="popup-title" id="popup-title" style="color:var(--accent);">ADJUST ZONE LINE</div>
+
+  <!-- Option A: Drag -->
+  <div class="popup-row">
+    <button class="popup-btn drag-btn" id="popup-drag-btn"
+      onclick="startDragFromPopup()">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" style="width:13px;height:13px;">
+        <line x1="7" y1="2" x2="7" y2="12"/>
+        <polyline points="4,5 7,2 10,5"/>
+        <polyline points="4,9 7,12 10,9"/>
+      </svg>
+      Drag Line
+    </button>
+  </div>
+
+  <!-- Option B: Type price -->
+  <div style="font-size:9px;color:var(--muted);text-align:center;letter-spacing:.5px;">— or type exact price —</div>
+  <div class="popup-price-row">
+    <input type="number" id="popup-price-input" step="any" placeholder="e.g. 2345.50"
+      onkeydown="if(event.key==='Enter') confirmPopupPrice()"
+    />
+    <button class="confirm-btn" onclick="confirmPopupPrice()">SET ✓</button>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════════════════════
 //  CONFIG
@@ -747,70 +832,40 @@ function startZoneDraw(zoneKey) {
 
 function placeZoneLine(price, zoneKey) {
   const z = zones[zoneKey];
-  // Remove previous zone line if exists
   if (z.hlineId !== null) {
     const old = hlines.find(h=>h.id===z.hlineId);
     if (old) removeHline(old.id);
   }
-
   z.price     = price;
-  z.triggered = false; // reset so alert fires again
-
-  // Add a special hline for this zone
+  z.armed     = true;   // auto-arm immediately
+  z.triggered = false;
   const h = addHline(price, ZONE_COLORS[zoneKey], true, zoneKey);
   z.hlineId = h.id;
-
-  // Update panel display
   document.getElementById(`zone-${zoneKey}-price`).textContent = price.toFixed(currentDigits);
-
-  // Reset draw state
   drawingZone = null;
   activeTool  = "pointer";
   document.getElementById("chart-container").classList.remove("drawing");
   document.getElementById(`zone-${zoneKey}-btn`).classList.remove("drawing");
   document.getElementById(`zone-${zoneKey}-btn`).textContent = "Set Line";
-
   updateZoneBadge(zoneKey);
-
-  // In phone mode — panel already collapsed, but ensure it's closed
   if (typeof phoneModeOn !== "undefined" && phoneModeOn) closePhonePanel();
 }
 
 function clearZone(zoneKey) {
   const z = zones[zoneKey];
-  if (z.hlineId !== null) {
-    removeHline(z.hlineId);
-    z.hlineId = null;
-  }
-  z.price     = null;
-  z.armed     = false;
-  z.triggered = false;
+  if (z.hlineId !== null) { removeHline(z.hlineId); z.hlineId = null; }
+  z.price = null; z.armed = false; z.triggered = false;
   document.getElementById(`zone-${zoneKey}-price`).textContent = "not set";
   updateZoneBadge(zoneKey);
 }
 
-function toggleZone(zoneKey) {
-  const z = zones[zoneKey];
-  if (!z.price) { showToast("⚠️", "Set a price line first!", "#ffc400", "warning"); return; }
-  z.armed     = !z.armed;
-  z.triggered = false; // re-arm
-  updateZoneBadge(zoneKey);
-}
-
 function updateZoneBadge(zoneKey) {
-  const z       = zones[zoneKey];
-  const badge   = document.getElementById(`zone-${zoneKey}-badge`);
-  const toggle  = document.getElementById(`zone-${zoneKey}-toggle`);
+  const z     = zones[zoneKey];
+  const badge = document.getElementById(`zone-${zoneKey}-badge`);
   if (z.armed && z.price !== null) {
-    badge.textContent = "ARMED";
-    badge.className   = "zone-status-badge badge-armed";
-    toggle.textContent = "DISABLE";
-    toggle.className  = "zone-toggle on";
+    badge.textContent = "ARMED"; badge.className = "zone-status-badge badge-armed";
   } else {
-    badge.textContent = "OFF";
-    badge.className   = "zone-status-badge badge-off";
-    toggle.textContent = "ENABLE";
-    toggle.className  = "zone-toggle";
+    badge.textContent = "OFF";   badge.className = "zone-status-badge badge-off";
   }
 }
 
@@ -1024,6 +1079,11 @@ let panStartOff = 0;
 let panStartY   = 0;
 let panStartYOff = 0;
 
+// Y-axis drag-to-zoom state
+let isYDragging      = false;
+let yDragStartY      = 0;
+let yDragStartFactor = 1.0;
+
 // Y-axis pan and zoom state
 let yPanOffset  = 0;    // price units shifted up/down from auto-fit
 let yZoomFactor = 1.0;  // >1 = zoomed out on price axis, <1 = zoomed in
@@ -1084,6 +1144,19 @@ function initChart() {
 
   svg.append("rect").attr("id","price-label-bg").attr("width",margin.right-2).attr("height",20).attr("rx",2).style("display","none");
   svg.append("text").attr("id","price-label-text").attr("font-family","Share Tech Mono,monospace").attr("font-size","11px").attr("fill","#000").attr("dominant-baseline","middle").style("display","none");
+
+  // ── Y-axis drag zone: drag up = zoom in price, drag down = zoom out ──
+  svg.append("rect")
+    .attr("id","y-drag-zone")
+    .attr("x", width - margin.right).attr("y", margin.top)
+    .attr("width", margin.right).attr("height", height - margin.top - margin.bottom)
+    .attr("fill","transparent").style("cursor","ns-resize")
+    .on("mousedown", function(event) {
+      yDragStartY      = event.clientY;
+      yDragStartFactor = yZoomFactor;
+      isYDragging      = true;
+      event.preventDefault();
+    });
 
   svg.append("rect")
     .attr("class","mouse-overlay")
@@ -1454,13 +1527,24 @@ function addHline(priceValue, color, isZone=false, zoneKey=null) {
     else removeHline(id);
   });
 
-  // Drag
-  const startDrag = (clientY) => {
-    draggingHline = id;
-    document.body.style.cursor="ns-resize";
-  };
-  labelEl.addEventListener("mousedown",e=>{ if(!e.target.classList.contains("del-btn")){ e.preventDefault(); startDrag(e.clientY); }});
-  lineEl.style("cursor","ns-resize").on("mousedown",e=>{ e.preventDefault(); startDrag(e.clientY); });
+  if (isZone) {
+    // Zone lines: click/tap opens the action popup (drag or type price)
+    const openPopup = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (e.target.classList.contains("del-btn")) return;
+      openZoneLinePopup(id, color, zoneKey);
+    };
+    labelEl.addEventListener("click", openPopup);
+    labelEl.addEventListener("touchend", e => { e.stopPropagation(); e.preventDefault(); openPopup(e); });
+    lineEl.style("cursor","pointer")
+      .on("click", () => openZoneLinePopup(id, color, zoneKey));
+  } else {
+    // Non-zone hlines: old drag-on-mousedown behaviour
+    const startDrag = () => { draggingHline = id; document.body.style.cursor="ns-resize"; };
+    labelEl.addEventListener("mousedown",e=>{ if(!e.target.classList.contains("del-btn")){ e.preventDefault(); startDrag(); }});
+    lineEl.style("cursor","ns-resize").on("mousedown",e=>{ e.preventDefault(); startDrag(); });
+  }
 
   updateHlineCount();
   return hline;
@@ -1493,10 +1577,103 @@ function clearAllLines(){
 }
 
 function updateHlineCount(){ /* count display removed */ }
+
+// ═══════════════════════════════════════════════════════════════
+//  ZONE LINE ACTION POPUP
+// ═══════════════════════════════════════════════════════════════
+let popupHlineId = null;
+
+function openZoneLinePopup(hlineId, color, zoneKey) {
+  popupHlineId = hlineId;
+  const h = hlines.find(h => h.id === hlineId);
+  if (!h) return;
+
+  const popup = document.getElementById("zone-line-popup");
+  const title = document.getElementById("popup-title");
+  const input = document.getElementById("popup-price-input");
+
+  title.textContent = (zoneKey || "ZONE").toUpperCase() + " LINE";
+  title.style.color = color;
+  input.value = h.price.toFixed(currentDigits);
+  input.step  = Math.pow(10, -currentDigits).toFixed(currentDigits);
+
+  // Position popup: centre of screen on phone, near label on desktop
+  popup.classList.add("open");
+
+  // Centre horizontally, smart vertical position
+  const pw = popup.offsetWidth || 240;
+  const ph = popup.offsetHeight || 180;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const labelY = yScale ? yScale(h.price) : vh / 2;
+  const chartRect = document.getElementById("chart-container").getBoundingClientRect();
+  const absY = chartRect.top + labelY;
+
+  let top  = Math.min(absY - ph / 2, vh - ph - 20);
+  let left = Math.max(10, Math.min(vw - pw - 10, vw / 2 - pw / 2));
+  top = Math.max(60, top);
+
+  popup.style.top  = top  + "px";
+  popup.style.left = left + "px";
+
+  // Focus the input after a tick so keyboard opens on mobile
+  setTimeout(() => { input.focus(); input.select(); }, 80);
+}
+
+function closeZonePopup() {
+  document.getElementById("zone-line-popup").classList.remove("open");
+  // If we were in drag-ready mode, cancel it
+  draggingHline = null;
+  document.body.style.cursor = "";
+  popupHlineId = null;
+}
+
+function startDragFromPopup() {
+  if (popupHlineId === null) return;
+  draggingHline = popupHlineId;
+  document.body.style.cursor = "ns-resize";
+  document.getElementById("zone-line-popup").classList.remove("open");
+  showToast("↕", "Now drag anywhere on the chart up/down to move the line", "var(--gold)", "info");
+}
+
+function confirmPopupPrice() {
+  const input = document.getElementById("popup-price-input");
+  const val   = parseFloat(input.value);
+  if (isNaN(val)) { input.style.borderColor="var(--red)"; return; }
+  const h = hlines.find(h => h.id === popupHlineId);
+  if (!h) { closeZonePopup(); return; }
+  h.price = val;
+  if (h.isZone && h.zoneKey) {
+    zones[h.zoneKey].price     = val;
+    zones[h.zoneKey].triggered = false;
+    const el = document.getElementById(`zone-${h.zoneKey}-price`);
+    if (el) el.textContent = val.toFixed(currentDigits);
+  }
+  positionHline(h);
+  renderChart();
+  closeZonePopup();
+}
+
+// Close popup when clicking outside it
+document.addEventListener("pointerdown", e => {
+  const popup = document.getElementById("zone-line-popup");
+  if (popup.classList.contains("open") && !popup.contains(e.target)) {
+    closeZonePopup();
+  }
+});
 // Drag events
 document.addEventListener("mousemove",e=>{
   window._lastMouseX = e.clientX;
   window._lastMouseY = e.clientY;
+
+  // ── Y-axis drag: drag up = zoom in price, drag down = zoom out ──
+  if (isYDragging) {
+    const dy = e.clientY - yDragStartY;
+    // 200px of drag = 2x zoom change
+    yZoomFactor = Math.max(0.2, Math.min(20, yDragStartFactor * Math.pow(1.01, dy)));
+    renderChart();
+    return;
+  }
+
   // ── zone-line drag ──
   if(draggingHline!==null&&yScale){
     const h=hlines.find(h=>h.id===draggingHline);
@@ -1539,6 +1716,7 @@ document.addEventListener("mousemove",e=>{
 });
 
 document.addEventListener("mouseup",()=>{
+  if (isYDragging) { isYDragging = false; return; }
   if(draggingHline!==null){ draggingHline=null; document.body.style.cursor=""; }
   if(isPanning){
     isPanning=false;
@@ -1902,13 +2080,11 @@ function buildPhonePanel(tab) {
           <span style="color:${color};font-weight:700;min-width:55px;">${label}</span>
           <span style="color:var(--muted);font-size:9px;flex:1;">${desc}</span>
           <span style="color:${color};min-width:70px;text-align:center;font-size:10px;">${priceStr}</span>
+          <span class="zone-status-badge ${armed?"badge-armed":"badge-off"}" style="font-size:9px;">${armed?"ARMED":"OFF"}</span>
           <button class="zone-set-btn" id="pp-set-${key}"
             onclick="ppStartZoneDraw('${key}')"
-            style="padding:5px 10px;">Set Line</button>
+            style="padding:5px 10px;">Set</button>
           <button class="zone-clear-btn" onclick="clearZone('${key}');refreshPhoneZonePanel()">✕</button>
-          <button class="zone-toggle${armed?" on":""}" onclick="toggleZone('${key}');refreshPhoneZonePanel()">
-            ${armed?"ON":"OFF"}
-          </button>
         </div>`;
     };
     return hdr("◈","ZONES","#a78bfa") +
@@ -1969,7 +2145,7 @@ function buildPhonePanel(tab) {
 
   if (tab === "tf") {
     const tfs = [
-      [60,"1M"],[900,"15M"],[3600,"1H"],[14400,"4H"],[86400,"1D"],[604800,"1W"]
+      [60,"1M"],[300,"5M"],[900,"15M"],[3600,"1H"],[14400,"4H"],[86400,"1D"],[345600,"4D"],[604800,"1W"],[2592000,"1MO"]
     ];
     const tfBtns = tfs.map(([g,label]) => {
       const active = currentGranularity === g;
@@ -2061,6 +2237,7 @@ connect();
   let touchStartOff  = 0;
   let touchStartYOff = 0;
   let touchMoved     = false;
+  let touchDragHlineId = null;  // zone line being dragged on phone
 
   function getTouches(e) { return Array.from(e.touches); }
 
@@ -2070,18 +2247,53 @@ connect();
     return Math.sqrt(dx*dx + dy*dy);
   }
 
+  // Find a zone hline within HIT_PX pixels of the touch Y
+  const HIT_PX = 22;
+  function findHlineNear(clientY) {
+    if (!yScale) return null;
+    const rect = container.getBoundingClientRect();
+    const touchY = clientY - rect.top;
+    let best = null, bestDist = HIT_PX;
+    hlines.forEach(h => {
+      if (!h.isZone) return;
+      const lineY = yScale(h.price);
+      const dist  = Math.abs(lineY - touchY);
+      if (dist < bestDist) { bestDist = dist; best = h; }
+    });
+    return best;
+  }
+
   container.addEventListener("touchstart", e => {
     e.preventDefault();
     const ts = getTouches(e);
     touches = {};
     ts.forEach(t => touches[t.identifier] = t);
+    touchDragHlineId = null;
+
+    // If drag mode was activated from popup, hijack next single touch as drag
+    if (draggingHline !== null && ts.length === 1) {
+      touchDragHlineId = draggingHline;
+      touchStartX = ts[0].clientX;
+      touchStartY = ts[0].clientY;
+      touchMoved  = false;
+      return;
+    }
 
     if (ts.length === 1) {
-      touchStartX   = ts[0].clientX;
-      touchStartY   = ts[0].clientY;
-      touchStartOff = viewOffset;
+      // Check if finger is near a zone line — track it, open popup on tap
+      const nearHline = findHlineNear(ts[0].clientY);
+      if (nearHline) {
+        touchDragHlineId = nearHline.id;
+        touchStartX = ts[0].clientX;
+        touchStartY = ts[0].clientY;
+        touchMoved  = false;
+        return; // don't init chart pan
+      }
+      touchStartX    = ts[0].clientX;
+      touchStartY    = ts[0].clientY;
+      touchStartOff  = viewOffset;
       touchStartYOff = yPanOffset;
-      touchMoved    = false;
+      touchMoved     = false;
       lastTouchX = ts[0].clientX;
       lastTouchY = ts[0].clientY;
     }
@@ -2095,6 +2307,43 @@ connect();
   container.addEventListener("touchmove", e => {
     e.preventDefault();
     const ts = getTouches(e);
+
+    // ── Zone line drag (only if popup "Drag" was chosen) ──
+    if (touchDragHlineId !== null && ts.length === 1) {
+      const dx = ts[0].clientX - touchStartX;
+      const dy = ts[0].clientY - touchStartY;
+      const moved = Math.abs(dx) > 6 || Math.abs(dy) > 6;
+
+      if (draggingHline !== null) {
+        // Popup drag mode confirmed — move the line
+        const h = hlines.find(h => h.id === touchDragHlineId);
+        if (h && yScale) {
+          const rect = container.getBoundingClientRect();
+          const newPrice = yScale.invert(ts[0].clientY - rect.top);
+          h.price = newPrice;
+          if (h.isZone && h.zoneKey) {
+            zones[h.zoneKey].price = newPrice;
+            zones[h.zoneKey].triggered = false;
+            const el = document.getElementById(`zone-${h.zoneKey}-price`);
+            if (el) el.textContent = newPrice.toFixed(currentDigits);
+          }
+          positionHline(h);
+          touchMoved = true;
+        }
+        return;
+      }
+
+      if (moved) {
+        // Finger moved significantly before popup — cancel and fall through to pan
+        touchDragHlineId = null;
+        touchStartX    = ts[0].clientX;
+        touchStartY    = ts[0].clientY;
+        touchStartOff  = viewOffset;
+        touchStartYOff = yPanOffset;
+      } else {
+        return; // small movement near line — wait for tap
+      }
+    }
 
     if (ts.length === 2) {
       // ── Pinch zoom (X axis) ──
@@ -2115,10 +2364,10 @@ connect();
       if (lastTouchX !== null) {
         const dx = cx - lastTouchX;
         const dy = cy - lastTouchY;
-        // X pan
+        // X pan: drag right → older candles → viewOffset increases
         const chartW     = width - margin.left - margin.right;
         const pxPerCandle = Math.max(1, chartW / viewCount);
-        viewOffset = Math.round(viewOffset - dx / pxPerCandle);
+        viewOffset = Math.round(viewOffset + dx / pxPerCandle);
         clampViewOffset();
         // Y pan
         if (yScale) {
@@ -2140,7 +2389,8 @@ connect();
 
       const chartW      = width - margin.left - margin.right;
       const pxPerCandle = Math.max(1, chartW / viewCount);
-      viewOffset = touchStartOff + Math.round(-dx / pxPerCandle);
+      // Positive dx (drag right) → see older candles → viewOffset increases
+      viewOffset = touchStartOff + Math.round(dx / pxPerCandle);
       clampViewOffset();
 
       if (yScale) {
@@ -2155,7 +2405,6 @@ connect();
 
   container.addEventListener("touchend", e => {
     e.preventDefault();
-    lastPinchDist = null;
     const ts = getTouches(e);
     if (ts.length < 2) lastPinchDist = null;
     if (ts.length === 1) {
@@ -2165,16 +2414,28 @@ connect();
       lastTouchX = null;
       lastTouchY = null;
     }
-    // Tap to place hline/zone (only if finger didn't move much)
-    if (ts.length === 0 && !touchMoved && e.changedTouches.length) {
-      const t    = e.changedTouches[0];
-      const rect = container.getBoundingClientRect();
-      const mx   = t.clientX - rect.left;
-      const my   = t.clientY - rect.top;
-      if (activeTool === "zone" && drawingZone && yScale) {
+
+    if (ts.length === 0 && e.changedTouches.length) {
+      // If we were tracking a zone line tap (not a drag)
+      if (touchDragHlineId !== null && !touchMoved && draggingHline === null) {
+        const h = hlines.find(h => h.id === touchDragHlineId);
+        if (h) openZoneLinePopup(h.id, h.color, h.zoneKey);
+        touchDragHlineId = null;
+        touchMoved = false;
+        return;
+      }
+      // Place zone line on chart tap
+      if (!touchMoved && activeTool === "zone" && drawingZone && yScale) {
+        const t    = e.changedTouches[0];
+        const rect = container.getBoundingClientRect();
+        const my   = t.clientY - rect.top;
         placeZoneLine(yScale.invert(my), drawingZone);
       }
     }
+
+    touchDragHlineId = null;
+    draggingHline    = null;
+    document.body.style.cursor = "";
     touchMoved = false;
   }, { passive: false });
 
