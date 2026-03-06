@@ -81,8 +81,6 @@
   .tool-btn:hover{border-color:var(--gold);color:var(--gold);}
   .tool-btn.active{background:rgba(255,196,0,.1);border-color:var(--gold);color:var(--gold);}
   .tool-btn svg{width:13px;height:13px;}
-  .color-swatch{width:17px;height:17px;border-radius:3px;border:2px solid transparent;cursor:pointer;transition:border-color .15s;}
-  .color-swatch:hover,.color-swatch.selected{border-color:var(--text);}
   .tool-sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
 
   #btn-zone{border-color:var(--border);}
@@ -336,14 +334,6 @@
   .pp-row:last-child { border-bottom: none; }
   .pp-label { font-size: 10px; color: var(--muted); min-width: 50px; font-family: 'Share Tech Mono', monospace; }
 
-  /* Compact color swatches for phone panel */
-  .pp-swatches { display:flex; gap:5px; flex-wrap:wrap; }
-  .pp-swatch {
-    width:22px; height:22px; border-radius:4px;
-    border:2px solid transparent; cursor:pointer;
-  }
-  .pp-swatch.selected { border-color:#fff; }
-
   /* Zone rows in phone panel - simplified */
   .pp-zone-row {
     display:flex; align-items:center; gap:8px;
@@ -447,13 +437,12 @@
   <!-- TIMEFRAME BUTTONS -->
   <div id="tf-selector" style="display:flex;gap:4px;align-items:center;">
     <span style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-right:2px;">TF</span>
-    <button class="tf-btn" data-granularity="60"    data-label="1M">1M</button>
-    <button class="tf-btn" data-granularity="300"   data-label="5M">5M</button>
-    <button class="tf-btn" data-granularity="900"   data-label="15M">15M</button>
-    <button class="tf-btn" data-granularity="1800"  data-label="30M">30M</button>
-    <button class="tf-btn active" data-granularity="3600"  data-label="1H">1H</button>
-    <button class="tf-btn" data-granularity="14400" data-label="4H">4H</button>
-    <button class="tf-btn" data-granularity="86400" data-label="1D">1D</button>
+    <button class="tf-btn" data-granularity="60"     data-label="1M">1M</button>
+    <button class="tf-btn" data-granularity="900"    data-label="15M">15M</button>
+    <button class="tf-btn active" data-granularity="3600"   data-label="1H">1H</button>
+    <button class="tf-btn" data-granularity="14400"  data-label="4H">4H</button>
+    <button class="tf-btn" data-granularity="86400"  data-label="1D">1D</button>
+    <button class="tf-btn" data-granularity="604800" data-label="1W">1W</button>
   </div>
 
   <div style="display:flex;align-items:center;gap:7px;">
@@ -470,17 +459,6 @@
 
 <!-- DRAWING TOOLBAR -->
 <div id="toolbar">
-  <span class="tool-label">TOOLS</span>
-
-  <button class="tool-btn active" id="btn-pointer" onclick="setTool('pointer')">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2l10 5-5 1-2 5z"/></svg>
-    Pointer
-  </button>
-
-  <button class="tool-btn" id="btn-hline" onclick="setTool('hline')">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="1" y1="7" x2="13" y2="7"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
-    H-Line
-  </button>
 
   <!-- ZONE BUTTON -->
   <button class="tool-btn" id="btn-zone" onclick="toggleZonePanel()">
@@ -507,24 +485,6 @@
     </svg>
     FVG
   </button>
-
-  <div class="tool-sep"></div>
-  <span class="tool-label">COLOR</span>
-  <div id="color-swatches" style="display:flex;gap:4px;align-items:center;">
-    <div class="color-swatch selected" data-color="#ffc400" style="background:#ffc400;" title="Gold"></div>
-    <div class="color-swatch" data-color="#00c7ff" style="background:#00c7ff;" title="Blue"></div>
-    <div class="color-swatch" data-color="#00e676" style="background:#00e676;" title="Green"></div>
-    <div class="color-swatch" data-color="#ff3d5a" style="background:#ff3d5a;" title="Red"></div>
-    <div class="color-swatch" data-color="#c084fc" style="background:#c084fc;" title="Purple"></div>
-    <div class="color-swatch" data-color="#fb923c" style="background:#fb923c;" title="Orange"></div>
-    <div class="color-swatch" data-color="#e0eaf5" style="background:#e0eaf5;" title="White"></div>
-  </div>
-  <div class="tool-sep"></div>
-  <button class="tool-btn" onclick="clearAllLines()" style="color:var(--red);">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/></svg>
-    Clear All
-  </button>
-  <span id="hline-count" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-left:4px;"></span>
 
   <div class="tool-sep"></div>
   <span class="tool-label">ZOOM</span>
@@ -663,16 +623,6 @@
 <!-- ═══ PHONE DOCK ════════════════════════════════════════════ -->
 <div id="phone-dock">
 
-  <button class="dock-btn" id="dock-pointer" onclick="dockTap('pointer')">
-    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l12 6-6 1.2-2.4 6z"/></svg>
-    Pointer
-  </button>
-
-  <button class="dock-btn" id="dock-hline" onclick="dockTap('hline')">
-    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="9" x2="16" y2="9"/><circle cx="9" cy="9" r="2" fill="currentColor"/></svg>
-    H-Line
-  </button>
-
   <button class="dock-btn" id="dock-zone" onclick="dockTap('zone')">
     <svg viewBox="0 0 18 18" fill="none" stroke-width="1.4">
       <rect x="1" y="2.5" width="16" height="4" rx="1" stroke="#00e676"/>
@@ -698,16 +648,6 @@
       <line x1="7.5" y1="5" x2="7.5" y2="10"/><line x1="5" y1="7.5" x2="10" y2="7.5"/>
     </svg>
     Zoom
-  </button>
-
-  <button class="dock-btn" id="dock-color" onclick="dockTap('color')">
-    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4">
-      <circle cx="6" cy="6" r="3.5" fill="#ff3d5a" stroke="none"/>
-      <circle cx="12" cy="6" r="3.5" fill="#00e676" stroke="none"/>
-      <circle cx="6" cy="12" r="3.5" fill="#00c7ff" stroke="none"/>
-      <circle cx="12" cy="12" r="3.5" fill="#ffc400" stroke="none"/>
-    </svg>
-    Color
   </button>
 
   <button class="dock-btn" id="dock-tf" onclick="dockTap('tf')">
@@ -767,28 +707,12 @@ let currentDigits      = 2;      // decimal places per symbol (XAU=2, forex=5, J
 let currentSubId       = null;   // active subscription ID — used to forget before re-sub
 
 // ═══════════════════════════════════════════════════════════════
-//  TOOL STATE
+//  TOOL STATE  (zone drawing only — hline/color removed)
 // ═══════════════════════════════════════════════════════════════
-let activeTool  = "pointer";
-let activeColor = "#ffc400";
-let hlines      = [];
-let draggingHline = null;
-let hlineIdSeq  = 0;
-
-function setTool(t) {
-  activeTool = t;
-  document.getElementById("btn-pointer").classList.toggle("active", t==="pointer");
-  document.getElementById("btn-hline").classList.toggle("active",   t==="hline");
-  document.getElementById("chart-container").classList.toggle("drawing", t!=="pointer");
-}
-
-document.querySelectorAll(".color-swatch").forEach(sw => {
-  sw.addEventListener("click", () => {
-    document.querySelectorAll(".color-swatch").forEach(s=>s.classList.remove("selected"));
-    sw.classList.add("selected");
-    activeColor = sw.dataset.color;
-  });
-});
+let activeTool = "pointer";   // "pointer" | "zone"
+let hlines     = [];          // zone lines still rendered as hlines internally
+let draggingHline = null;     // id of zone-line being dragged
+let hlineIdSeq    = 0;        // id counter for zone lines
 
 // ═══════════════════════════════════════════════════════════════
 //  ZONE STATE
@@ -1565,20 +1489,15 @@ function removeHline(id){
 }
 
 function clearAllLines(){
-  // Clear zones too
   Object.keys(zones).forEach(clearZone);
-  [...hlines].forEach(h=>removeHline(h.id));
 }
 
-function updateHlineCount(){
-  const el=document.getElementById("hline-count");
-  el.textContent=hlines.length>0?`${hlines.length} line${hlines.length>1?"s":""}`:"";}
-
+function updateHlineCount(){ /* count display removed */ }
 // Drag events
 document.addEventListener("mousemove",e=>{
   window._lastMouseX = e.clientX;
   window._lastMouseY = e.clientY;
-  // ── hline drag ──
+  // ── zone-line drag ──
   if(draggingHline!==null&&yScale){
     const h=hlines.find(h=>h.id===draggingHline);
     if(h){
@@ -1633,15 +1552,11 @@ document.addEventListener("mouseup",()=>{
   }
 });
 
-// Chart click — only fires if not panning
+// Chart click — zone placement only
 let wasPanning = false;
 function onChartClick(event){
   if(wasPanning){ wasPanning=false; return; }
-  if(activeTool==="hline"){
-    if(!yScale)return;
-    const[,my]=d3.pointer(event);
-    addHline(yScale.invert(my),activeColor);
-  } else if(activeTool==="zone" && drawingZone){
+  if(activeTool==="zone" && drawingZone){
     const[,my]=d3.pointer(event);
     placeZoneLine(yScale.invert(my), drawingZone);
   }
@@ -1660,9 +1575,9 @@ function onMouseMove(event){
   crosshairX.style("display",null).attr("x1",mx).attr("x2",mx).attr("y1",margin.top).attr("y2",height-margin.bottom);
   crosshairY.style("display",null).attr("x1",margin.left).attr("x2",width-margin.right).attr("y1",my).attr("y2",my);
 
-  const isDrawing=activeTool==="hline"||activeTool==="zone";
+  const isDrawing = activeTool==="zone";
   if(isDrawing){
-    const col=activeTool==="zone"?ZONE_COLORS[drawingZone]||"#ffffff":activeColor;
+    const col = ZONE_COLORS[drawingZone]||"#ffffff";
     const ghostPrice=yScale.invert(my);
     svg.selectAll(".ghost-line").data([1]).join("line").attr("class","ghost-line")
       .attr("x1",margin.left).attr("x2",width-margin.right).attr("y1",my).attr("y2",my)
@@ -1958,29 +1873,14 @@ function dockTap(tab) {
     tab === "zone" ? "active-purple" :
     tab === "fvg"  ? "active" :
     tab === "zoom" ? "active-blue" :
-    tab === "hline"? "active-blue" :
-    tab === "color"? "active" : "active-blue"
+    tab === "tf"   ? "active" : "active-blue"
   );
 
   const panel = document.getElementById("phone-panel");
   panel.innerHTML = buildPhonePanel(tab);
   panel.classList.add("open");
 
-  // Re-bind color swatches inside panel
-  panel.querySelectorAll(".pp-swatch").forEach(sw => {
-    sw.addEventListener("click", () => {
-      panel.querySelectorAll(".pp-swatch").forEach(s => s.classList.remove("selected"));
-      sw.classList.add("selected");
-      activeColor = sw.dataset.color;
-    });
-  });
-
-  // If pointer tool, just switch tool and close
-  if (tab === "pointer") {
-    setTool("pointer");
-    closePhonePanel();
-  }
-
+  // Re-bind swatches inside panel (none currently, future-proof)
   setTimeout(() => { initChart(); renderChart(); }, 30);
 }
 
@@ -1990,33 +1890,6 @@ function buildPhonePanel(tab) {
        <span>${icon} ${title}</span>
        <button class="phone-panel-close" onclick="closePhonePanel()">✕</button>
      </div>`;
-
-  if (tab === "hline") {
-    const colorSwatches = [
-      ["#ffc400","Gold"],["#00c7ff","Blue"],["#00e676","Green"],
-      ["#ff3d5a","Red"],["#c084fc","Purple"],["#fb923c","Orange"],["#e0eaf5","White"]
-    ].map(([c,n]) =>
-      `<div class="pp-swatch${activeColor===c?" selected":""}" data-color="${c}"
-            style="background:${c}" title="${n}"></div>`
-    ).join("");
-
-    return hdr("━","H-LINE","#00c7ff") +
-      `<div class="pp-row">
-         <span class="pp-label">COLOR</span>
-         <div class="pp-swatches">${colorSwatches}</div>
-       </div>
-       <div class="pp-row">
-         <button class="zone-set-btn" style="flex:1;padding:10px;font-size:12px;"
-           onclick="setTool('hline');closePhonePanel();">
-           ✏️ Tap chart to place line
-         </button>
-       </div>
-       <div class="pp-row">
-         <button class="zone-set-btn" onclick="clearAllLines()" style="color:var(--red);flex:1;padding:8px;">
-           🗑 Clear all lines
-         </button>
-       </div>`;
-  }
 
   if (tab === "zone") {
     const zoneRow = (key, color, icon, label, desc) => {
@@ -2096,7 +1969,7 @@ function buildPhonePanel(tab) {
 
   if (tab === "tf") {
     const tfs = [
-      [60,"1M"],[300,"5M"],[900,"15M"],[1800,"30M"],[3600,"1H"],[14400,"4H"],[86400,"1D"]
+      [60,"1M"],[900,"15M"],[3600,"1H"],[14400,"4H"],[86400,"1D"],[604800,"1W"]
     ];
     const tfBtns = tfs.map(([g,label]) => {
       const active = currentGranularity === g;
@@ -2107,25 +1980,6 @@ function buildPhonePanel(tab) {
     return hdr("🕐","TIMEFRAME","#ffc400") +
       `<div class="pp-row" style="gap:6px;flex-wrap:wrap;padding:10px 14px;">
          ${tfBtns}
-       </div>`;
-  }
-
-  if (tab === "color") {
-    const colorSwatches = [
-      ["#ffc400","Gold"],["#00c7ff","Blue"],["#00e676","Green"],
-      ["#ff3d5a","Red"],["#c084fc","Purple"],["#fb923c","Orange"],["#e0eaf5","White"]
-    ].map(([c,n]) =>
-      `<div class="pp-swatch${activeColor===c?" selected":""}" data-color="${c}"
-            style="background:${c};width:32px;height:32px;border-radius:6px;" title="${n}"></div>`
-    ).join("");
-
-    return hdr("●","LINE COLOR") +
-      `<div class="pp-row" style="gap:8px;padding:12px 14px;">
-         <div class="pp-swatches" style="gap:8px;">${colorSwatches}</div>
-       </div>
-       <div class="pp-row">
-         <button class="zone-set-btn" style="flex:1;padding:9px;"
-           onclick="setTool('hline');closePhonePanel()">✏️ Place H-Line with this color</button>
        </div>`;
   }
 
@@ -2317,9 +2171,7 @@ connect();
       const rect = container.getBoundingClientRect();
       const mx   = t.clientX - rect.left;
       const my   = t.clientY - rect.top;
-      if (activeTool === "hline" && yScale) {
-        addHline(yScale.invert(my), activeColor);
-      } else if (activeTool === "zone" && drawingZone && yScale) {
+      if (activeTool === "zone" && drawingZone && yScale) {
         placeZoneLine(yScale.invert(my), drawingZone);
       }
     }
