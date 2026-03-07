@@ -2833,20 +2833,16 @@ function drawFVGs(show, fvgs) {
 
   // ── 2. Overlay coloured candles on FVG candles ──────────────
   // Bullish FVG candles → gray body + white wick
-  // Bearish FVG candles → black body + white wick
-  // Build a map: candle index → fvg type (bearish wins if overlap)
-  const fvgTypeMap = {};
-  fvgs.forEach(f => {
-    [f.i1, f.i2, f.i3].forEach(idx => {
-      // bearish takes priority so black overwrites gray if a candle is in both
-      if (!fvgTypeMap[idx] || f.type === "bearish") fvgTypeMap[idx] = f.type;
-    });
-  });
+  // Color each FVG candle by its own direction:
+  //   green candle (close >= open) → gray body (#888888) + light outline
+  //   red candle   (close <  open) → black body (#000000) + white outline
+  // Build a set of indices that belong to any FVG
+  const fvgIndexSet = new Set();
+  fvgs.forEach(f => { fvgIndexSet.add(f.i1); fvgIndexSet.add(f.i2); fvgIndexSet.add(f.i3); });
 
-  const fvgData = show.map((c, i) => fvgTypeMap[i] ? { ...c, fvgType: fvgTypeMap[i] } : null)
-                      .filter(Boolean);
+  const fvgData = show.map((c, i) => fvgIndexSet.has(i) ? c : null).filter(Boolean);
 
-  // Wicks — white for both
+  // Wicks — white for all FVG candles
   candleG.selectAll(".fvg-wick-overlay")
     .data(fvgData, d => d.epoch)
     .join(e => e.append("line").attr("class","fvg-wick-overlay"))
@@ -2857,7 +2853,7 @@ function drawFVGs(show, fvgs) {
     .attr("stroke", "#ffffff").attr("stroke-width", 1.2)
     .attr("pointer-events", "none");
 
-  // Bodies — gray for bullish, black for bearish
+  // Bodies — gray if green candle, black if red candle
   candleG.selectAll(".fvg-body-overlay")
     .data(fvgData, d => d.epoch)
     .join(e => e.append("rect").attr("class","fvg-body-overlay").attr("rx", 1))
@@ -2865,8 +2861,8 @@ function drawFVGs(show, fvgs) {
     .attr("width",  bw)
     .attr("y",      d => yScale(Math.max(d.open, d.close)))
     .attr("height", d => Math.max(1, Math.abs(yScale(d.open) - yScale(d.close))))
-    .attr("fill",   d => d.fvgType === "bullish" ? "#888888" : "#000000")
-    .attr("stroke", d => d.fvgType === "bullish" ? "#cccccc" : "#ffffff")
+    .attr("fill",   d => d.close >= d.open ? "#888888" : "#000000")
+    .attr("stroke", d => d.close >= d.open ? "#cccccc" : "#ffffff")
     .attr("stroke-width", 1.2)
     .attr("pointer-events", "none");
 }
