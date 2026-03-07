@@ -92,6 +92,355 @@
   #btn-fvg:hover{border-color:#ffc400;color:#ffc400;}
   #btn-fvg.active{background:rgba(255,196,0,.12);border-color:#ffc400;color:#ffc400;}
 
+  /* FVG DROPDOWN MENU */
+  #fvg-menu{
+    display:none;position:absolute;z-index:8000;
+    background:var(--panel);border:1px solid rgba(255,196,0,.35);
+    border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,.6);
+    flex-direction:column;overflow:hidden;min-width:150px;
+  }
+  #fvg-menu.open{display:flex;}
+  .fvg-menu-btn{
+    display:flex;align-items:center;gap:8px;
+    padding:10px 14px;background:transparent;border:none;
+    color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;
+    cursor:pointer;text-align:left;white-space:nowrap;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    transition:background .15s;
+  }
+  .fvg-menu-btn:last-child{border-bottom:none;}
+  .fvg-menu-btn:hover{background:rgba(255,196,0,.12);color:#ffc400;}
+  .fvg-menu-btn svg{flex-shrink:0;}
+
+  /* FVG LIST PANEL */
+  #fvg-list-panel{
+    display:none;position:fixed;top:0;right:0;bottom:0;
+    width:300px;max-width:92vw;z-index:7000;
+    background:var(--surface);border-left:1px solid rgba(255,196,0,.25);
+    flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.7);
+    transition:bottom .25s ease, top .25s ease;
+  }
+  #fvg-list-panel.open{display:flex;}
+  #fvg-list-panel.collapsed{bottom:auto;}
+  #fvg-list-panel.collapsed #fvg-list-body{display:none;}
+  #fvg-list-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 14px;background:rgba(255,196,0,.08);
+    border-bottom:1px solid rgba(255,196,0,.2);flex-shrink:0;
+  }
+  #fvg-list-header span{
+    font-family:'Share Tech Mono',monospace;font-size:12px;
+    color:#ffc400;font-weight:700;letter-spacing:.5px;
+  }
+  #fvg-list-close{
+    background:none;border:none;color:var(--muted);cursor:pointer;
+    font-size:18px;line-height:1;padding:0 4px;
+  }
+  #fvg-list-close:hover{color:var(--text);}
+  .panel-roll-btn{
+    background:none;border:none;color:var(--muted);cursor:pointer;
+    font-size:14px;line-height:1;padding:0 4px;transition:transform .25s,color .15s;
+  }
+  .panel-roll-btn:hover{color:#ffc400;}
+  .panel-roll-btn.rolled{transform:rotate(180deg);}
+  #fvg-list-body{flex:1;overflow-y:auto;padding:8px 0;transition:all .25s;}
+  #fvg-list-body::-webkit-scrollbar{width:4px;}
+  #fvg-list-body::-webkit-scrollbar-thumb{background:rgba(255,196,0,.3);border-radius:2px;}
+  .fvg-list-empty{
+    padding:32px 16px;text-align:center;
+    font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);
+  }
+  .fvg-list-item{
+    display:flex;flex-direction:column;gap:5px;
+    margin:6px 10px;padding:10px 12px;
+    background:var(--panel);border-radius:6px;
+    border:1px solid var(--border);cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .fvg-list-item:hover{border-color:#00c7ff;background:rgba(0,199,255,.05);}
+  .fvg-list-item-header{display:flex;align-items:center;justify-content:space-between;}
+  .fvg-list-type{
+    font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;
+  }
+  .fvg-list-type.bull{color:#ccc;}
+  .fvg-list-type.bear{color:#888;}
+  .fvg-list-ent{
+    font-family:'Share Tech Mono',monospace;font-size:11px;
+    font-weight:700;color:#00c7ff;
+    background:rgba(0,199,255,.12);border:1px solid rgba(0,199,255,.3);
+    padding:1px 7px;border-radius:10px;
+  }
+  .fvg-list-row{
+    display:flex;gap:10px;font-family:'Share Tech Mono',monospace;
+    font-size:10px;color:var(--muted);
+  }
+  .fvg-list-row b{color:var(--text);}
+  .fvg-list-goto{
+    margin-top:4px;display:flex;align-items:center;gap:4px;
+    font-family:'Share Tech Mono',monospace;font-size:10px;
+    color:rgba(0,199,255,.6);
+  }
+
+  /* ALL-FVG SCAN MODAL */
+  #all-fvg-overlay{
+    display:none;position:fixed;inset:0;z-index:9500;
+    background:rgba(0,0,0,.75);align-items:center;justify-content:center;
+  }
+  #all-fvg-overlay.open{display:flex;}
+  #all-fvg-modal{
+    background:var(--surface);border:1px solid rgba(255,196,0,.35);
+    border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.8);
+    width:360px;max-width:95vw;max-height:88vh;
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  #all-fvg-modal-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 16px;background:rgba(255,196,0,.08);
+    border-bottom:1px solid rgba(255,196,0,.2);flex-shrink:0;
+  }
+  #all-fvg-modal-header span{
+    font-family:'Share Tech Mono',monospace;font-size:12px;
+    color:#ffc400;font-weight:700;letter-spacing:.5px;
+  }
+  #all-fvg-modal-close{
+    background:none;border:none;color:var(--muted);
+    cursor:pointer;font-size:18px;line-height:1;padding:0 4px;
+  }
+  #all-fvg-modal-close:hover{color:var(--text);}
+  #all-fvg-modal-body{flex:1;overflow-y:auto;padding:14px 16px;}
+  #all-fvg-modal-body::-webkit-scrollbar{width:4px;}
+  #all-fvg-modal-body::-webkit-scrollbar-thumb{background:rgba(255,196,0,.3);border-radius:2px;}
+  .afscan-section-title{
+    font-family:'Share Tech Mono',monospace;font-size:9px;
+    color:var(--muted);letter-spacing:1px;text-transform:uppercase;
+    margin:0 0 8px 0;
+  }
+  .afscan-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+  .afscan-chip{
+    font-family:'Share Tech Mono',monospace;font-size:10px;
+    padding:4px 10px;border-radius:20px;border:1px solid var(--border);
+    background:var(--panel);color:var(--muted);cursor:pointer;
+    transition:all .15s;user-select:none;
+  }
+  .afscan-chip.selected{
+    background:rgba(255,196,0,.15);border-color:#ffc400;color:#ffc400;
+  }
+  .afscan-selall{
+    font-family:'Share Tech Mono',monospace;font-size:9px;
+    color:var(--muted);cursor:pointer;text-decoration:underline;
+    background:none;border:none;padding:0;margin-bottom:4px;
+  }
+  .afscan-selall:hover{color:var(--text);}
+  #all-fvg-scan-btn{
+    width:100%;margin-top:8px;padding:11px;
+    background:rgba(255,196,0,.15);border:1px solid #ffc400;
+    color:#ffc400;font-family:'Share Tech Mono',monospace;font-size:12px;
+    font-weight:700;border-radius:6px;cursor:pointer;transition:background .15s;
+  }
+  #all-fvg-scan-btn:hover{background:rgba(255,196,0,.28);}
+  #all-fvg-scan-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  /* ALL-FVG PROGRESS */
+  #all-fvg-progress{
+    display:none;flex-direction:column;gap:10px;padding:14px 16px;
+  }
+  #all-fvg-progress.show{display:flex;}
+  #all-fvg-prog-text{
+    font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);
+    text-align:center;
+  }
+  #all-fvg-prog-bar-wrap{
+    height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;
+  }
+  #all-fvg-prog-bar{
+    height:100%;background:#ffc400;border-radius:3px;
+    width:0%;transition:width .3s;
+  }
+  #all-fvg-prog-sub{
+    font-family:'Share Tech Mono',monospace;font-size:9px;
+    color:var(--muted);text-align:center;
+  }
+
+  /* ALL-FVG LIST PANEL */
+  #all-fvg-list-panel{
+    display:none;position:fixed;top:0;right:0;bottom:0;
+    width:340px;max-width:96vw;z-index:7100;
+    background:var(--surface);border-left:1px solid rgba(255,196,0,.25);
+    flex-direction:column;box-shadow:-4px 0 28px rgba(0,0,0,.8);
+    transition:bottom .25s ease;
+  }
+  #all-fvg-list-panel.open{display:flex;}
+  #all-fvg-list-panel.collapsed{bottom:auto;}
+  #all-fvg-list-panel.collapsed #all-fvg-list-panel-body{display:none;}
+  #all-fvg-list-panel-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 14px;background:rgba(255,196,0,.08);
+    border-bottom:1px solid rgba(255,196,0,.2);flex-shrink:0;
+  }
+  #all-fvg-list-panel-header span{
+    font-family:'Share Tech Mono',monospace;font-size:12px;
+    color:#ffc400;font-weight:700;letter-spacing:.5px;
+  }
+  #all-fvg-list-panel-close{
+    background:none;border:none;color:var(--muted);
+    cursor:pointer;font-size:18px;line-height:1;padding:0 4px;
+  }
+  #all-fvg-list-panel-close:hover{color:var(--text);}
+  #all-fvg-list-panel-body{flex:1;overflow-y:auto;padding:8px 0;}
+  #all-fvg-list-panel-body::-webkit-scrollbar{width:4px;}
+  #all-fvg-list-panel-body::-webkit-scrollbar-thumb{background:rgba(255,196,0,.3);border-radius:2px;}
+  .afvg-sym-badge{
+    font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;
+    padding:1px 6px;border-radius:10px;
+    background:rgba(255,196,0,.12);border:1px solid rgba(255,196,0,.3);
+    color:#ffc400;margin-right:4px;
+  }
+  .afvg-tf-badge{
+    font-family:'Share Tech Mono',monospace;font-size:9px;
+    padding:1px 6px;border-radius:10px;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+    color:var(--muted);
+  }
+
+  /* MONITOR BUTTON */
+  #btn-monitor{border-color:var(--border);}
+  #btn-monitor:hover{border-color:#ff9500;color:#ff9500;}
+  #btn-monitor.active{background:rgba(255,149,0,.15);border-color:#ff9500;color:#ff9500;animation:monitorPulse 1.5s infinite;}
+  @keyframes monitorPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,149,0,0)}50%{box-shadow:0 0 6px 2px rgba(255,149,0,0.4)}}
+
+  /* ALERT LOG BUTTON */
+  #btn-alerts{border-color:var(--border);position:relative;}
+  #btn-alerts:hover{border-color:#ff9500;color:#ff9500;}
+  #btn-alerts.has-alerts{border-color:#ff9500;color:#ff9500;}
+  #alert-badge{
+    display:none;position:absolute;top:-4px;right:-4px;
+    background:#ff9500;color:#000;font-family:'Share Tech Mono',monospace;
+    font-size:8px;font-weight:700;min-width:14px;height:14px;
+    border-radius:7px;padding:0 3px;align-items:center;justify-content:center;
+  }
+  #alert-badge.show{display:flex;}
+
+  /* MONITOR SETUP MODAL */
+  #monitor-overlay{
+    display:none;position:fixed;inset:0;z-index:9500;
+    background:rgba(0,0,0,.75);align-items:center;justify-content:center;
+  }
+  #monitor-overlay.open{display:flex;}
+  #monitor-modal{
+    background:var(--surface);border:1px solid rgba(255,149,0,.4);
+    border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.8);
+    width:360px;max-width:95vw;max-height:88vh;
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  #monitor-modal-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 16px;background:rgba(255,149,0,.08);
+    border-bottom:1px solid rgba(255,149,0,.2);flex-shrink:0;
+  }
+  #monitor-modal-header span{
+    font-family:'Share Tech Mono',monospace;font-size:12px;
+    color:#ff9500;font-weight:700;letter-spacing:.5px;
+  }
+  #monitor-modal-close{
+    background:none;border:none;color:var(--muted);
+    cursor:pointer;font-size:18px;line-height:1;padding:0 4px;
+  }
+  #monitor-modal-close:hover{color:var(--text);}
+  #monitor-modal-body{flex:1;overflow-y:auto;padding:14px 16px;}
+  .monitor-scan-input{
+    width:100%;box-sizing:border-box;
+    background:var(--panel);border:1px solid var(--border);
+    color:var(--text);font-family:'Share Tech Mono',monospace;
+    font-size:12px;padding:8px 10px;border-radius:5px;outline:none;
+    margin-top:4px;margin-bottom:14px;
+  }
+  .monitor-scan-input:focus{border-color:#ff9500;}
+  #monitor-start-btn{
+    width:100%;margin-top:8px;padding:11px;
+    background:rgba(255,149,0,.15);border:1px solid #ff9500;
+    color:#ff9500;font-family:'Share Tech Mono',monospace;font-size:12px;
+    font-weight:700;border-radius:6px;cursor:pointer;transition:background .15s;
+  }
+  #monitor-start-btn:hover{background:rgba(255,149,0,.28);}
+  #monitor-start-btn:disabled{opacity:.4;cursor:not-allowed;}
+  #monitor-stop-btn{
+    width:100%;margin-top:6px;padding:9px;
+    background:rgba(255,61,90,.1);border:1px solid rgba(255,61,90,.5);
+    color:var(--red);font-family:'Share Tech Mono',monospace;font-size:11px;
+    border-radius:6px;cursor:pointer;transition:background .15s;display:none;
+  }
+  #monitor-stop-btn:hover{background:rgba(255,61,90,.2);}
+  #monitor-status-line{
+    font-family:'Share Tech Mono',monospace;font-size:10px;
+    color:#ff9500;margin-top:10px;text-align:center;min-height:16px;
+  }
+
+  /* ALERT LOG PANEL */
+  #alert-log-panel{
+    display:none;position:fixed;top:0;right:0;bottom:0;
+    width:320px;max-width:94vw;z-index:7200;
+    background:var(--surface);border-left:1px solid rgba(255,149,0,.3);
+    flex-direction:column;box-shadow:-4px 0 28px rgba(0,0,0,.8);
+    transition:bottom .25s ease;
+  }
+  #alert-log-panel.open{display:flex;}
+  #alert-log-panel.collapsed{bottom:auto;}
+  #alert-log-panel.collapsed #alert-log-body{display:none;}
+  #alert-log-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 14px;background:rgba(255,149,0,.08);
+    border-bottom:1px solid rgba(255,149,0,.2);flex-shrink:0;
+  }
+  #alert-log-header span{
+    font-family:'Share Tech Mono',monospace;font-size:12px;
+    color:#ff9500;font-weight:700;letter-spacing:.5px;
+  }
+  #alert-log-body{flex:1;overflow-y:auto;padding:8px 0;}
+  #alert-log-body::-webkit-scrollbar{width:4px;}
+  #alert-log-body::-webkit-scrollbar-thumb{background:rgba(255,149,0,.3);border-radius:2px;}
+  #alert-log-footer{
+    padding:10px 12px;border-top:1px solid var(--border);flex-shrink:0;
+    display:flex;gap:8px;
+  }
+  .alert-log-dl-btn{
+    flex:1;padding:8px;background:rgba(255,149,0,.12);
+    border:1px solid rgba(255,149,0,.4);color:#ff9500;
+    font-family:'Share Tech Mono',monospace;font-size:10px;
+    border-radius:5px;cursor:pointer;transition:background .15s;
+  }
+  .alert-log-dl-btn:hover{background:rgba(255,149,0,.25);}
+  .alert-log-clear-btn{
+    padding:8px 12px;background:rgba(255,61,90,.1);
+    border:1px solid rgba(255,61,90,.35);color:var(--red);
+    font-family:'Share Tech Mono',monospace;font-size:10px;
+    border-radius:5px;cursor:pointer;transition:background .15s;
+  }
+  .alert-log-clear-btn:hover{background:rgba(255,61,90,.22);}
+  .alert-item{
+    display:flex;flex-direction:column;gap:4px;
+    margin:6px 10px;padding:9px 11px;
+    background:var(--panel);border-radius:6px;
+    border-left:3px solid #ff9500;
+  }
+  .alert-item-header{
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .alert-item-sym{
+    font-family:'Share Tech Mono',monospace;font-size:12px;
+    font-weight:700;color:var(--text);
+  }
+  .alert-item-ent{
+    font-family:'Share Tech Mono',monospace;font-size:11px;
+    font-weight:700;color:#ff9500;
+    background:rgba(255,149,0,.12);border:1px solid rgba(255,149,0,.3);
+    padding:1px 7px;border-radius:10px;
+  }
+  .alert-item-row{
+    font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);
+    display:flex;gap:8px;flex-wrap:wrap;
+  }
+  .alert-item-row b{color:var(--text);}
+
   /* FVG info bar (shows count when active) */
   #fvg-info{
     font-family:'Share Tech Mono',monospace;font-size:10px;
@@ -545,21 +894,169 @@
     Zone
   </button>
 
-  <!-- FVG BUTTON -->
-  <button class="tool-btn" id="btn-fvg" onclick="toggleFVG()">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
-      <!-- 3 candles with gap between 1 and 3 -->
-      <line x1="2.5" y1="2" x2="2.5" y2="12" stroke="currentColor" stroke-width="0.8"/>
-      <rect x="1" y="4" width="3" height="5" fill="white" stroke="currentColor" stroke-width="1"/>
-      <line x1="7" y1="1" x2="7" y2="11" stroke="currentColor" stroke-width="0.8"/>
-      <rect x="5.5" y="3" width="3" height="6" fill="currentColor"/>
-      <line x1="11.5" y1="3" x2="11.5" y2="13" stroke="currentColor" stroke-width="0.8"/>
-      <rect x="10" y="5" width="3" height="5" fill="white" stroke="currentColor" stroke-width="1"/>
-      <!-- gap indicator -->
-      <line x1="4" y1="4" x2="10" y2="5" stroke="#ffc400" stroke-width="0.8" stroke-dasharray="1,1"/>
+  <!-- FVG BUTTON + DROPDOWN -->
+  <div style="position:relative;">
+    <button class="tool-btn" id="btn-fvg" onclick="toggleFVGMenu(event)">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
+        <line x1="2.5" y1="2" x2="2.5" y2="12" stroke="currentColor" stroke-width="0.8"/>
+        <rect x="1" y="4" width="3" height="5" fill="white" stroke="currentColor" stroke-width="1"/>
+        <line x1="7" y1="1" x2="7" y2="11" stroke="currentColor" stroke-width="0.8"/>
+        <rect x="5.5" y="3" width="3" height="6" fill="currentColor"/>
+        <line x1="11.5" y1="3" x2="11.5" y2="13" stroke="currentColor" stroke-width="0.8"/>
+        <rect x="10" y="5" width="3" height="5" fill="white" stroke="currentColor" stroke-width="1"/>
+        <line x1="4" y1="4" x2="10" y2="5" stroke="#ffc400" stroke-width="0.8" stroke-dasharray="1,1"/>
+      </svg>
+      FVG ▾
+    </button>
+    <div id="fvg-menu">
+      <button class="fvg-menu-btn" onclick="fvgMenuScan()">
+        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="6" cy="6" r="4.5"/><line x1="9.5" y1="9.5" x2="13" y2="13"/>
+        </svg>
+        Scan for FVG
+      </button>
+      <button class="fvg-menu-btn" onclick="fvgMenuList()">
+        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="2" y1="4" x2="12" y2="4"/>
+          <line x1="2" y1="7" x2="12" y2="7"/>
+          <line x1="2" y1="10" x2="8" y2="10"/>
+          <circle cx="11" cy="10" r="2" fill="#00c7ff" stroke="none"/>
+        </svg>
+        FVG in a List
+      </button>
+      <button class="fvg-menu-btn" onclick="fvgMenuAllList()">
+        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="1" y="2" width="12" height="10" rx="1.5"/>
+          <line x1="4" y1="5.5" x2="10" y2="5.5"/>
+          <line x1="4" y1="8" x2="10" y2="8"/>
+          <circle cx="2.8" cy="5.5" r="0.9" fill="currentColor" stroke="none"/>
+          <circle cx="2.8" cy="8" r="0.9" fill="#ffc400" stroke="none"/>
+        </svg>
+        All FVG in a List
+      </button>
+    </div>
+  </div>
+
+  <!-- FVG LIST PANEL -->
+  <div id="fvg-list-panel">
+    <div id="fvg-list-header">
+      <span>📋 FVG ENTRIES</span>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button class="panel-roll-btn" id="fvg-list-roll" onclick="toggleRollPanel('fvg')" title="Roll up / down">▲</button>
+        <button id="fvg-list-close" onclick="closeFVGList()">✕</button>
+      </div>
+    </div>
+    <div id="fvg-list-body"></div>
+  </div>
+
+  <!-- ALL-FVG SCAN MODAL -->
+  <div id="all-fvg-overlay">
+    <div id="all-fvg-modal">
+      <div id="all-fvg-modal-header">
+        <span>🌐 ALL FVG SCAN</span>
+        <button id="all-fvg-modal-close" onclick="closeAllFVGModal()">✕</button>
+      </div>
+      <!-- Selection body -->
+      <div id="all-fvg-modal-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <p class="afscan-section-title" style="margin:0;">Symbols</p>
+          <button class="afscan-selall" onclick="afToggleAll('sym')">Select All</button>
+        </div>
+        <div class="afscan-chips" id="af-sym-chips"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <p class="afscan-section-title" style="margin:0;">Timeframes</p>
+          <button class="afscan-selall" onclick="afToggleAll('tf')">Select All</button>
+        </div>
+        <div class="afscan-chips" id="af-tf-chips"></div>
+        <button id="all-fvg-scan-btn" onclick="startAllFVGScan()">🔍 SCAN</button>
+      </div>
+      <!-- Progress (hidden until scan starts) -->
+      <div id="all-fvg-progress">
+        <div id="all-fvg-prog-text">Preparing...</div>
+        <div id="all-fvg-prog-bar-wrap"><div id="all-fvg-prog-bar"></div></div>
+        <div id="all-fvg-prog-sub"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALL-FVG LIST PANEL -->
+  <div id="all-fvg-list-panel">
+    <div id="all-fvg-list-panel-header">
+      <span>🌐 ALL FVG ENTRIES</span>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button class="panel-roll-btn" id="all-fvg-list-roll" onclick="toggleRollPanel('all')" title="Roll up / down">▲</button>
+        <button id="all-fvg-list-panel-close" onclick="closeAllFVGListPanel()">✕</button>
+      </div>
+    </div>
+    <div id="all-fvg-list-panel-body"></div>
+  </div>
+
+  <!-- MONITOR BUTTON -->
+  <button class="tool-btn" id="btn-monitor" onclick="openMonitorModal()" title="Multi-symbol FVG monitor">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="7" cy="7" r="5.5"/>
+      <circle cx="7" cy="7" r="2" fill="currentColor" stroke="none"/>
+      <line x1="7" y1="0.5" x2="7" y2="3"/>
+      <line x1="7" y1="11" x2="7" y2="13.5"/>
+      <line x1="0.5" y1="7" x2="3" y2="7"/>
+      <line x1="11" y1="7" x2="13.5" y2="7"/>
     </svg>
-    FVG
+    Monitor
   </button>
+
+  <!-- ALERTS BUTTON -->
+  <button class="tool-btn" id="btn-alerts" onclick="openAlertLog()" title="View alert log">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M7 1 C4.5 1 3 3 3 5.5 L3 8.5 L1.5 10.5 L12.5 10.5 L11 8.5 L11 5.5 C11 3 9.5 1 7 1Z"/>
+      <line x1="5.5" y1="12" x2="8.5" y2="12"/>
+    </svg>
+    Alerts
+    <span id="alert-badge"></span>
+  </button>
+
+  <!-- MONITOR SETUP MODAL -->
+  <div id="monitor-overlay">
+    <div id="monitor-modal">
+      <div id="monitor-modal-header">
+        <span>🎯 MONITOR SETUP</span>
+        <button id="monitor-modal-close" onclick="closeMonitorModal()">✕</button>
+      </div>
+      <div id="monitor-modal-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <p class="afscan-section-title" style="margin:0;">Symbols</p>
+          <button class="afscan-selall" onclick="monToggleAll('sym')">Select All</button>
+        </div>
+        <div class="afscan-chips" id="mon-sym-chips"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <p class="afscan-section-title" style="margin:0;">Timeframes</p>
+          <button class="afscan-selall" onclick="monToggleAll('tf')">Select All</button>
+        </div>
+        <div class="afscan-chips" id="mon-tf-chips"></div>
+        <p class="afscan-section-title">Scan last N candles per symbol</p>
+        <input type="number" id="mon-candle-input" class="monitor-scan-input"
+               min="3" max="9999" value="20" placeholder="e.g. 20"/>
+        <button id="monitor-start-btn" onclick="startMultiMonitor()">🎯 START MONITORING</button>
+        <button id="monitor-stop-btn" onclick="stopMultiMonitor()">⏹ STOP MONITORING</button>
+        <div id="monitor-status-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALERT LOG PANEL -->
+  <div id="alert-log-panel">
+    <div id="alert-log-header">
+      <span id="alert-log-title">🔔 ALERT LOG</span>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button class="panel-roll-btn" id="alert-log-roll" onclick="toggleRollPanel('alert')" title="Roll up / down">▲</button>
+        <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:0 4px;" onclick="closeAlertLog()">✕</button>
+      </div>
+    </div>
+    <div id="alert-log-body"></div>
+    <div id="alert-log-footer">
+      <button class="alert-log-dl-btn" onclick="downloadAlertLog()">⬇ Download CSV</button>
+      <button class="alert-log-clear-btn" onclick="clearAlertLog()">Clear</button>
+    </div>
+  </div>
 
   <div class="tool-sep"></div>
   <span class="tool-label">ZOOM</span>
@@ -1220,17 +1717,19 @@ function initChart() {
 
     // Right edge (Y-axis area) → zoom price axis vertically
     if (mouseX > width - margin.right - 10) {
-      const zoomIn = event.deltaY < 0;
-      yZoomFactor = Math.max(0.2, Math.min(20, yZoomFactor * (zoomIn ? 0.85 : 1.18)));
+      // Scale by deltaY so slow scroll = slow zoom. 0.003 per pixel is gentle.
+      const factor = Math.exp(event.deltaY * 0.003);
+      yZoomFactor = Math.max(0.2, Math.min(20, yZoomFactor * factor));
       renderChart();
       return;
     }
 
     // ctrlKey = pinch-to-zoom gesture on trackpad → zoom X axis
     if (event.ctrlKey) {
-      const zoomIn = event.deltaY < 0;
+      // deltaY for pinch is typically small (2–20px per event) — use 0.008
+      const factor = Math.exp(event.deltaY * 0.008);
       const frac   = Math.max(0, Math.min(1, (mouseX - margin.left) / chartW));
-      zoomBy(zoomIn ? 0.75 : 1.33, frac);
+      zoomBy(Math.max(0.9, Math.min(factor, 1.11)), frac);
       return;
     }
 
@@ -1239,7 +1738,6 @@ function initChart() {
 
     if (absX > absY) {
       // 2-finger horizontal swipe → pan left/right
-      // Negate delta: swiping left (deltaX > 0) = see newer candles = decrease viewOffset
       const pxPerCandle = Math.max(1, chartW / viewCount);
       const delta       = Math.round(event.deltaX / pxPerCandle);
       viewOffset        = viewOffset - delta;
@@ -1247,10 +1745,12 @@ function initChart() {
       renderChart();
       updateZoomLabel();
     } else {
-      // Vertical scroll / scroll wheel → zoom X axis
-      const zoomIn = event.deltaY < 0;
+      // Vertical scroll wheel → zoom X axis
+      // Mouse wheel: deltaY ≈ ±100 per notch → factor ≈ 0.97/1.03 (gentle)
+      // Trackpad scroll: deltaY ≈ ±3–10 → even gentler per event
+      const factor = Math.exp(event.deltaY * 0.003);
       const frac   = Math.max(0, Math.min(1, (mouseX - margin.left) / chartW));
-      zoomBy(zoomIn ? 0.8 : 1.25, frac);
+      zoomBy(Math.max(0.9, Math.min(factor, 1.11)), frac);
     }
   };
   svgNode.addEventListener("wheel", svgNode._wheelHandler, { passive: false });
@@ -1290,8 +1790,845 @@ function toggleFVG() {
   fvgActive = !fvgActive;
   document.getElementById("btn-fvg").classList.toggle("active", fvgActive);
   document.getElementById("fvg-info").classList.toggle("visible", fvgActive);
+  // If FVG turned off, also turn off monitor
+  if (!fvgActive && fvgMonitorActive) toggleMonitor();
   requestAnimationFrame(() => { initChart(); renderChart(); });
 }
+
+// ── FVG dropdown menu ────────────────────────────────────────
+let fvgMenuOpen = false;
+
+function toggleFVGMenu(e) {
+  e.stopPropagation();
+  fvgMenuOpen = !fvgMenuOpen;
+  const menu = document.getElementById("fvg-menu");
+  menu.classList.toggle("open", fvgMenuOpen);
+
+  if (fvgMenuOpen) {
+    // Position below the button
+    const btn  = document.getElementById("btn-fvg");
+    const rect = btn.getBoundingClientRect();
+    menu.style.top  = (rect.bottom + 4) + "px";
+    menu.style.left = rect.left + "px";
+    // Close when clicking elsewhere
+    setTimeout(() => document.addEventListener("click", closeFVGMenuOnClick, { once: true }), 0);
+  }
+}
+
+function closeFVGMenuOnClick() {
+  fvgMenuOpen = false;
+  document.getElementById("fvg-menu").classList.remove("open");
+}
+
+function fvgMenuScan() {
+  closeFVGMenuOnClick();
+  toggleFVG();
+}
+
+function fvgMenuList() {
+  closeFVGMenuOnClick();
+  // FVG scan must be active to have data
+  if (!fvgActive) {
+    fvgActive = true;
+    document.getElementById("btn-fvg").classList.add("active");
+    document.getElementById("fvg-info").classList.add("visible");
+    requestAnimationFrame(() => { initChart(); renderChart(); });
+  }
+  buildFVGList();
+  document.getElementById("fvg-list-panel").classList.add("open");
+}
+
+function closeFVGList() {
+  document.getElementById("fvg-list-panel").classList.remove("open","collapsed");
+}
+
+function toggleRollPanel(which) {
+  const ids = {
+    fvg:   { panel:"fvg-list-panel",       btn:"fvg-list-roll"      },
+    all:   { panel:"all-fvg-list-panel",    btn:"all-fvg-list-roll"  },
+    alert: { panel:"alert-log-panel",       btn:"alert-log-roll"     },
+  };
+  const { panel, btn } = ids[which];
+  const el = document.getElementById(panel);
+  const b  = document.getElementById(btn);
+  const isCollapsed = el.classList.toggle("collapsed");
+  b.textContent = isCollapsed ? "▼" : "▲";
+}
+
+// ── Build the FVG list from current scan ─────────────────────
+function buildFVGList() {
+  const body = document.getElementById("fvg-list-body");
+  body.innerHTML = "";
+
+  // Get the current timeframe label
+  const tfBtn = document.querySelector(".tf-btn.active");
+  const tfLabel = tfBtn ? tfBtn.dataset.label : "?";
+
+  // Run detection on all candles within fvgScanCount
+  const total     = candles.length;
+  const scanStart = Math.max(0, total - fvgScanCount);
+  const scanSlice = candles.slice(scanStart);
+  const allFvgs   = detectFVGs(scanSlice, scanStart);
+
+  // Only ENT FVGs go in the list
+  const entFvgs = allFvgs.filter(f => f.status === "ENT");
+
+  if (!entFvgs.length) {
+    body.innerHTML = `<div class="fvg-list-empty">No ENT gaps found<br>in last ${fvgScanCount} candles</div>`;
+    return;
+  }
+
+  // Sort newest first (highest absI2 = closer to present)
+  entFvgs.sort((a, b) => b.absI2 - a.absI2);
+
+  entFvgs.forEach(f => {
+    const isBull   = f.type === "bullish";
+    const typeStr  = isBull ? "▲ Bullish" : "▼ Bearish";
+    const typeClass= isBull ? "bull" : "bear";
+    const d        = currentDigits;
+
+    // Time of the middle candle (c2)
+    const epoch = f.epoch2;
+    const dt    = new Date(epoch * 1000);
+    const timeStr = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")} `
+                  + `${String(dt.getHours()).padStart(2,"0")}:${String(dt.getMinutes()).padStart(2,"0")}`;
+
+    const gapSize = (f.gapHigh - f.gapLow).toFixed(d);
+
+    const item = document.createElement("div");
+    item.className = "fvg-list-item";
+    item.innerHTML = `
+      <div class="fvg-list-item-header">
+        <span class="fvg-list-type ${typeClass}">${typeStr}</span>
+        <span class="fvg-list-ent">ENT ${f.entPercent}%</span>
+      </div>
+      <div class="fvg-list-row">
+        <span>TF:</span><b>${tfLabel}</b>
+        <span style="margin-left:6px;">Symbol:</span><b>${currentName}</b>
+      </div>
+      <div class="fvg-list-row">
+        <span>Gap:</span><b>${f.gapLow.toFixed(d)} – ${f.gapHigh.toFixed(d)}</b>
+        <span style="margin-left:4px;">(${gapSize})</span>
+      </div>
+      <div class="fvg-list-row">
+        <span>Mid:</span><b>${f.mid.toFixed(d)}</b>
+      </div>
+      <div class="fvg-list-row">
+        <span>Time:</span><b>${timeStr}</b>
+      </div>
+      <div class="fvg-list-goto">→ tap to go to this FVG</div>
+    `;
+
+    item.addEventListener("click", () => {
+      navigateToFVG(f.absI2);
+      // List stays open so user can tap other items without rescanning
+    });
+
+    body.appendChild(item);
+  });
+}
+
+// ── Navigate chart to center on a given candle index ─────────
+function navigateToFVG(absI2) {
+  // Zoom to a comfortable level so the FVG is clearly visible
+  const FVG_VIEW = 40;
+  viewCount = Math.max(VIEW_MIN, Math.min(VIEW_MAX, FVG_VIEW));
+  clampViewCount();
+
+  // Center absI2 in the visible window
+  const halfView   = Math.round(viewCount / 2);
+  const desiredEnd = absI2 + halfView;
+  viewOffset = Math.max(0, candles.length - desiredEnd);
+  clampViewOffset();
+  requestAnimationFrame(() => renderChart());
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ALL-FVG MULTI-SYMBOL SCAN
+// ═══════════════════════════════════════════════════════════════
+
+// Master lists (match what's in the sym-drop-item buttons)
+const AF_SYMBOLS = [
+  { symbol:"frxXAUUSD", name:"XAU/USD", digits:2,  label:"XAUUSD" },
+  { symbol:"frxXAGUSD", name:"XAG/USD", digits:4,  label:"XAGUSD" },
+  { symbol:"frxGBPUSD", name:"GBP/USD", digits:5,  label:"GBPUSD" },
+  { symbol:"frxEURUSD", name:"EUR/USD", digits:5,  label:"EURUSD" },
+  { symbol:"frxUSDJPY", name:"USD/JPY", digits:3,  label:"USDJPY" },
+  { symbol:"frxEURJPY", name:"EUR/JPY", digits:3,  label:"EURJPY" },
+  { symbol:"frxGBPJPY", name:"GBP/JPY", digits:3,  label:"GBPJPY" },
+  { symbol:"frxEURGBP", name:"EUR/GBP", digits:5,  label:"EURGBP" },
+];
+const AF_TIMEFRAMES = [
+  { gran:60,      label:"1M"  },
+  { gran:300,     label:"5M"  },
+  { gran:900,     label:"15M" },
+  { gran:3600,    label:"1H"  },
+  { gran:14400,   label:"4H"  },
+  { gran:86400,   label:"1D"  },
+  { gran:345600,  label:"4D"  },
+  { gran:604800,  label:"1W"  },
+  { gran:2592000, label:"1MO" },
+];
+
+// Selected sets (store labels for simplicity)
+let afSelSymbols = new Set();
+let afSelTFs     = new Set();
+// Pending nav after symbol+TF switch
+let pendingNavEpoch = null;
+
+function fvgMenuAllList() {
+  closeFVGMenuOnClick();
+  openAllFVGModal();
+}
+
+function openAllFVGModal() {
+  // Build chips if not already built
+  buildAfChips();
+  // Reset to selection view
+  document.getElementById("all-fvg-modal-body").style.display = "";
+  document.getElementById("all-fvg-progress").classList.remove("show");
+  document.getElementById("all-fvg-overlay").classList.add("open");
+}
+
+function closeAllFVGModal() {
+  document.getElementById("all-fvg-overlay").classList.remove("open");
+}
+
+function buildAfChips() {
+  const symWrap = document.getElementById("af-sym-chips");
+  const tfWrap  = document.getElementById("af-tf-chips");
+  if (symWrap.children.length) return; // already built
+
+  AF_SYMBOLS.forEach(s => {
+    const chip = document.createElement("div");
+    chip.className = "afscan-chip";
+    chip.textContent = s.label;
+    chip.dataset.key = s.label;
+    chip.onclick = () => {
+      if (afSelSymbols.has(s.label)) { afSelSymbols.delete(s.label); chip.classList.remove("selected"); }
+      else                            { afSelSymbols.add(s.label);    chip.classList.add("selected"); }
+    };
+    symWrap.appendChild(chip);
+  });
+
+  AF_TIMEFRAMES.forEach(t => {
+    const chip = document.createElement("div");
+    chip.className = "afscan-chip";
+    chip.textContent = t.label;
+    chip.dataset.key = t.label;
+    chip.onclick = () => {
+      if (afSelTFs.has(t.label)) { afSelTFs.delete(t.label); chip.classList.remove("selected"); }
+      else                        { afSelTFs.add(t.label);    chip.classList.add("selected"); }
+    };
+    tfWrap.appendChild(chip);
+  });
+}
+
+function afToggleAll(type) {
+  if (type === "sym") {
+    const chips = document.querySelectorAll("#af-sym-chips .afscan-chip");
+    const allSel = afSelSymbols.size === AF_SYMBOLS.length;
+    if (allSel) {
+      afSelSymbols.clear();
+      chips.forEach(c => c.classList.remove("selected"));
+    } else {
+      AF_SYMBOLS.forEach(s => afSelSymbols.add(s.label));
+      chips.forEach(c => c.classList.add("selected"));
+    }
+  } else {
+    const chips = document.querySelectorAll("#af-tf-chips .afscan-chip");
+    const allSel = afSelTFs.size === AF_TIMEFRAMES.length;
+    if (allSel) {
+      afSelTFs.clear();
+      chips.forEach(c => c.classList.remove("selected"));
+    } else {
+      AF_TIMEFRAMES.forEach(t => afSelTFs.add(t.label));
+      chips.forEach(c => c.classList.add("selected"));
+    }
+  }
+}
+
+// ── Fetch candles once without subscribing ────────────────────
+function fetchCandlesOnce(symbol, granularity, count) {
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket("wss://ws.binaryws.com/websockets/v3?app_id=1089");
+    const timer = setTimeout(() => { ws.close(); reject(new Error("timeout")); }, 20000);
+    ws.onopen = () => {
+      ws.send(JSON.stringify({
+        ticks_history: symbol,
+        adjust_start_time: 1,
+        count: count,
+        end: "latest",
+        granularity: granularity,
+        style: "candles"
+        // No subscribe — one-shot
+      }));
+    };
+    ws.onmessage = e => {
+      const msg = JSON.parse(e.data);
+      clearTimeout(timer);
+      ws.close();
+      if (msg.error) { reject(new Error(msg.error.message || msg.error.code)); return; }
+      if (msg.msg_type === "candles") {
+        resolve((msg.candles || []).map(c => ({
+          epoch: c.epoch, open: parseFloat(c.open), high: parseFloat(c.high),
+          low:   parseFloat(c.low), close: parseFloat(c.close)
+        })));
+      }
+    };
+    ws.onerror = () => { clearTimeout(timer); reject(new Error("WebSocket error")); };
+  });
+}
+
+// ── Main scan function ────────────────────────────────────────
+async function startAllFVGScan() {
+  const selSyms = AF_SYMBOLS.filter(s => afSelSymbols.has(s.label));
+  const selTFs  = AF_TIMEFRAMES.filter(t => afSelTFs.has(t.label));
+
+  if (!selSyms.length || !selTFs.length) {
+    showToast("⚠", "Please select at least one symbol and one timeframe", "#ff9500", "warning");
+    return;
+  }
+
+  // Build all combinations
+  const combos = [];
+  selSyms.forEach(s => selTFs.forEach(t => combos.push({
+    symbol: s.symbol, name: s.name, digits: s.digits,
+    symLabel: s.label,   // ← explicitly kept separate from TF label
+    gran: t.gran, tfStr: t.label
+  })));
+  const total = combos.length;
+
+  // Switch to progress view
+  document.getElementById("all-fvg-modal-body").style.display = "none";
+  const prog = document.getElementById("all-fvg-progress");
+  prog.classList.add("show");
+  document.getElementById("all-fvg-scan-btn").disabled = true;
+
+  const setProgress = (done, currentLabel) => {
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById("all-fvg-prog-bar").style.width = pct + "%";
+    document.getElementById("all-fvg-prog-text").textContent =
+      `Scanning ${done} / ${total}`;
+    document.getElementById("all-fvg-prog-sub").textContent = currentLabel || "";
+  };
+
+  setProgress(0, "Starting...");
+
+  const allResults = [];
+
+  for (let i = 0; i < combos.length; i++) {
+    const combo = combos[i];
+    setProgress(i, `Fetching ${combo.name} ${combo.tfStr}...`);
+    try {
+      const data = await fetchCandlesOnce(combo.symbol, combo.gran, fvgScanCount);
+      if (data.length >= 3) {
+        const fvgs = detectFVGs(data, 0);
+        fvgs.filter(f => f.status === "ENT").forEach(f => {
+          f.symSymbol = combo.symbol;
+          f.symName   = combo.name;
+          f.symDigits = combo.digits;
+          f.symLabel  = combo.symLabel;   // e.g. "XAUUSD"
+          f.tfGran    = combo.gran;
+          f.tfStr     = combo.tfStr;       // e.g. "1H"
+          allResults.push(f);
+        });
+      }
+    } catch(err) {
+      console.warn(`Skip ${combo.name} ${combo.tfStr}:`, err.message);
+    }
+  }
+
+  setProgress(total, "Done");
+
+  // Short pause so user sees 100%, then show list
+  await new Promise(r => setTimeout(r, 400));
+
+  closeAllFVGModal();
+  document.getElementById("all-fvg-scan-btn").disabled = false;
+
+  buildAllFVGListPanel(allResults, selSyms, selTFs);
+  document.getElementById("all-fvg-list-panel").classList.add("open");
+}
+
+// ── Build the all-FVG result list panel ──────────────────────
+function buildAllFVGListPanel(results, selSyms, selTFs) {
+  const body = document.getElementById("all-fvg-list-panel-body");
+  body.innerHTML = "";
+
+  // Update header count
+  document.querySelector("#all-fvg-list-panel-header span").textContent =
+    `🌐 ${results.length} FVG ENTR${results.length===1?"Y":"IES"}`;
+
+  if (!results.length) {
+    body.innerHTML = `<div class="fvg-list-empty">No ENT gaps found<br>across selected symbols & timeframes</div>`;
+    return;
+  }
+
+  // Sort by entPercent descending (deepest entry first)
+  results.sort((a, b) => b.entPercent - a.entPercent);
+
+  results.forEach(f => {
+    const isBull   = f.type === "bullish";
+    const d        = f.symDigits;
+    const gapSize  = (f.gapHigh - f.gapLow).toFixed(d);
+
+    const epoch = f.epoch2;
+    const dt    = new Date(epoch * 1000);
+    const timeStr = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")} `
+                  + `${String(dt.getHours()).padStart(2,"0")}:${String(dt.getMinutes()).padStart(2,"0")}`;
+
+    const item = document.createElement("div");
+    item.className = "fvg-list-item";
+    item.innerHTML = `
+      <div class="fvg-list-item-header">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="fvg-list-type ${isBull?"bull":"bear"}" style="font-size:13px;">${isBull?"▲":"▼"}</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:700;color:var(--text);">${f.symName}</span>
+        </div>
+        <span class="fvg-list-ent">ENT ${f.entPercent}%</span>
+      </div>
+      <div class="fvg-list-row" style="gap:6px;">
+        <span class="afvg-sym-badge">${f.symLabel}</span>
+        <span class="afvg-tf-badge">${f.tfStr}</span>
+        <span class="fvg-list-type ${isBull?"bull":"bear"}" style="font-size:10px;margin-left:2px;">${isBull?"Bullish FVG":"Bearish FVG"}</span>
+      </div>
+      <div class="fvg-list-row">
+        <span>Gap:</span><b>${f.gapLow.toFixed(d)} – ${f.gapHigh.toFixed(d)}</b>
+        <span style="color:var(--muted)">(${gapSize})</span>
+      </div>
+      <div class="fvg-list-row">
+        <span>Mid:</span><b>${f.mid.toFixed(d)}</b>
+      </div>
+      <div class="fvg-list-row">
+        <span>Time:</span><b>${timeStr}</b>
+      </div>
+      <div class="fvg-list-goto">→ tap to switch chart &amp; go to FVG</div>
+    `;
+
+    item.addEventListener("click", () => {
+      navigateToAllFVG(f);
+      // List stays open so user can browse other FVGs without rescanning
+    });
+
+    body.appendChild(item);
+  });
+}
+
+function closeAllFVGListPanel() {
+  document.getElementById("all-fvg-list-panel").classList.remove("open","collapsed");
+  document.getElementById("all-fvg-list-roll").textContent = "▲";
+}
+
+// ── Switch chart to the FVG's symbol+TF then navigate ────────
+function navigateToAllFVG(f) {
+  // Store target epoch so handleMessage can navigate after candles load
+  pendingNavEpoch = f.epoch2;
+
+  // 1. Switch symbol if different
+  if (f.symSymbol !== currentSymbol) {
+    currentSymbol = f.symSymbol;
+    currentName   = f.symName;
+    currentDigits = f.symDigits;
+    // Update symbol UI
+    document.querySelectorAll(".sym-drop-item").forEach(b => {
+      b.classList.toggle("active", b.dataset.symbol === f.symSymbol);
+    });
+    const dispParts = f.symName.split("/");
+    document.getElementById("sym-display").textContent = dispParts[0] || f.symName;
+    if (document.getElementById("sym-label-bottom"))
+      document.getElementById("sym-label-bottom").textContent = f.symName;
+    ["ohlc-o","ohlc-h","ohlc-l","ohlc-c"].forEach(id =>
+      document.getElementById(id).textContent = "—");
+    document.getElementById("last-price-big").textContent = "—";
+    prevPrice = null;
+  }
+
+  // 2. Switch timeframe if different
+  if (f.tfGran !== currentGranularity) {
+    currentGranularity = f.tfGran;
+    document.querySelectorAll(".tf-btn").forEach(b => {
+      b.classList.toggle("active", parseInt(b.dataset.granularity) === f.tfGran);
+    });
+    if (document.getElementById("tf-label-bottom"))
+      document.getElementById("tf-label-bottom").textContent = "• " + f.tfStr;
+  }
+
+  // 3. Reset view and reload candles — handleMessage will navigate on load
+  viewCount = VIEW_DEF; viewOffset = 0;
+  yPanOffset = 0; yZoomFactor = 1.0;
+  initChart();
+  requestHistory();
+}
+// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+//  MULTI-SYMBOL FVG MONITOR
+// ═══════════════════════════════════════════════════════════════
+
+let fvgMonitorActive  = false;   // kept for legacy checkFVGMonitor (current-chart watch)
+let multiMonitorActive = false;
+let monitorScanCount   = 20;
+
+// Per symbol×TF: { openFVGs: [], ws: WebSocket, symbol, name, gran, tfStr, digits }
+const monitorSessions = {};
+
+// Alert log — persists until cleared
+const alertLog = [];
+
+// Fired set — prevents duplicate alerts within 60s
+// Key: `${symbol}_${gran}_${type}_${gapLow}_${gapHigh}`
+const multiMonFired = new Set();
+
+// Selected sets for monitor modal
+let monSelSymbols = new Set();
+let monSelTFs     = new Set();
+
+// ── Modal open/close ─────────────────────────────────────────
+function openMonitorModal() {
+  buildMonChips();
+  // Show/hide stop button based on current state
+  document.getElementById("monitor-start-btn").style.display = multiMonitorActive ? "none" : "";
+  document.getElementById("monitor-stop-btn").style.display  = multiMonitorActive ? ""     : "none";
+  document.getElementById("monitor-status-line").textContent =
+    multiMonitorActive ? `● Monitoring ${Object.keys(monitorSessions).length} feed(s)` : "";
+  document.getElementById("monitor-overlay").classList.add("open");
+}
+
+function closeMonitorModal() {
+  document.getElementById("monitor-overlay").classList.remove("open");
+}
+
+function buildMonChips() {
+  const symWrap = document.getElementById("mon-sym-chips");
+  const tfWrap  = document.getElementById("mon-tf-chips");
+  if (symWrap.children.length) return;
+
+  AF_SYMBOLS.forEach(s => {
+    const chip = document.createElement("div");
+    chip.className = "afscan-chip" + (monSelSymbols.has(s.label) ? " selected" : "");
+    chip.textContent = s.label;
+    chip.onclick = () => {
+      if (monSelSymbols.has(s.label)) { monSelSymbols.delete(s.label); chip.classList.remove("selected"); }
+      else                             { monSelSymbols.add(s.label);    chip.classList.add("selected"); }
+    };
+    symWrap.appendChild(chip);
+  });
+
+  AF_TIMEFRAMES.forEach(t => {
+    const chip = document.createElement("div");
+    chip.className = "afscan-chip" + (monSelTFs.has(t.label) ? " selected" : "");
+    chip.textContent = t.label;
+    chip.onclick = () => {
+      if (monSelTFs.has(t.label)) { monSelTFs.delete(t.label); chip.classList.remove("selected"); }
+      else                         { monSelTFs.add(t.label);    chip.classList.add("selected"); }
+    };
+    tfWrap.appendChild(chip);
+  });
+}
+
+function monToggleAll(type) {
+  if (type === "sym") {
+    const chips  = document.querySelectorAll("#mon-sym-chips .afscan-chip");
+    const allSel = monSelSymbols.size === AF_SYMBOLS.length;
+    if (allSel) { monSelSymbols.clear(); chips.forEach(c => c.classList.remove("selected")); }
+    else { AF_SYMBOLS.forEach(s => monSelSymbols.add(s.label)); chips.forEach(c => c.classList.add("selected")); }
+  } else {
+    const chips  = document.querySelectorAll("#mon-tf-chips .afscan-chip");
+    const allSel = monSelTFs.size === AF_TIMEFRAMES.length;
+    if (allSel) { monSelTFs.clear(); chips.forEach(c => c.classList.remove("selected")); }
+    else { AF_TIMEFRAMES.forEach(t => monSelTFs.add(t.label)); chips.forEach(c => c.classList.add("selected")); }
+  }
+}
+
+// ── Start monitoring ─────────────────────────────────────────
+async function startMultiMonitor() {
+  const selSyms = AF_SYMBOLS.filter(s => monSelSymbols.has(s.label));
+  const selTFs  = AF_TIMEFRAMES.filter(t => monSelTFs.has(t.label));
+
+  if (!selSyms.length || !selTFs.length) {
+    showToast("⚠", "Select at least one symbol and one timeframe", "#ff9500", "warning");
+    return;
+  }
+
+  const scanN = parseInt(document.getElementById("mon-candle-input").value) || 20;
+  monitorScanCount = Math.max(3, scanN);
+
+  // Stop any existing sessions first
+  stopMultiMonitor(true);
+
+  document.getElementById("monitor-start-btn").disabled = true;
+  document.getElementById("monitor-status-line").textContent = "Fetching history...";
+
+  const combos = [];
+  selSyms.forEach(s => selTFs.forEach(t => combos.push({ ...s, ...t })));
+  let loaded = 0;
+
+  for (const combo of combos) {
+    document.getElementById("monitor-status-line").textContent =
+      `Loading ${combo.name} ${combo.label}... (${loaded}/${combos.length})`;
+    try {
+      const history = await fetchCandlesOnce(combo.symbol, combo.gran, monitorScanCount);
+      // Detect open FVGs (no ENT) from history
+      const allFvgs  = detectFVGs(history, 0);
+      const openFvgs = allFvgs.filter(f => !f.status);
+
+      // Open a live WebSocket for this combo
+      const sessionKey = `${combo.symbol}_${combo.gran}`;
+      const liveWs = new WebSocket("wss://ws.binaryws.com/websockets/v3?app_id=1089");
+
+      monitorSessions[sessionKey] = {
+        openFVGs: openFvgs,
+        ws:       liveWs,
+        symbol:   combo.symbol,
+        name:     combo.name,
+        gran:     combo.gran,
+        tfStr:    combo.label,
+        digits:   combo.digits,
+      };
+
+      liveWs.onopen = () => {
+        liveWs.send(JSON.stringify({
+          ticks_history: combo.symbol,
+          adjust_start_time: 1,
+          count: 1,
+          end: "latest",
+          granularity: combo.gran,
+          style: "candles",
+          subscribe: 1
+        }));
+      };
+
+      liveWs.onmessage = e => {
+        const msg = JSON.parse(e.data);
+        if (msg.msg_type === "ohlc") handleMonitorTick(sessionKey, msg.ohlc);
+      };
+
+      liveWs.onerror = () => console.warn("Monitor WS error:", sessionKey);
+
+      loaded++;
+    } catch(err) {
+      console.warn("Monitor fetch failed:", combo.name, combo.label, err.message);
+      loaded++;
+    }
+  }
+
+  multiMonitorActive = true;
+  fvgMonitorActive   = true;   // keep legacy flag in sync
+  document.getElementById("btn-monitor").classList.add("active");
+  document.getElementById("monitor-start-btn").disabled = false;
+  document.getElementById("monitor-start-btn").style.display = "none";
+  document.getElementById("monitor-stop-btn").style.display  = "";
+  const activeCount = Object.keys(monitorSessions).length;
+  document.getElementById("monitor-status-line").textContent =
+    `● Monitoring ${activeCount} feed(s) — ${combos.length - activeCount} failed`;
+
+  showToast("🎯", `Monitor ON — watching ${activeCount} symbol×TF feed(s)`, "#ff9500", "info");
+}
+
+// ── Stop monitoring ───────────────────────────────────────────
+function stopMultiMonitor(silent = false) {
+  Object.values(monitorSessions).forEach(s => {
+    try { s.ws.close(); } catch(e) {}
+  });
+  for (const k in monitorSessions) delete monitorSessions[k];
+  multiMonitorActive = false;
+  fvgMonitorActive   = false;
+  multiMonFired.clear();
+  document.getElementById("btn-monitor").classList.remove("active");
+  document.getElementById("monitor-start-btn").style.display = "";
+  document.getElementById("monitor-stop-btn").style.display  = "none";
+  document.getElementById("monitor-status-line").textContent = "";
+  if (!silent) {
+    showToast("⭕", "Monitor OFF", "var(--muted)", "info");
+    closeMonitorModal();
+  }
+}
+
+// ── Per-tick handler ──────────────────────────────────────────
+function handleMonitorTick(sessionKey, ohlc) {
+  const session = monitorSessions[sessionKey];
+  if (!session) return;
+
+  // Use close price of latest candle as current price
+  const price = parseFloat(ohlc.close);
+  const d     = session.digits;
+
+  session.openFVGs.forEach(f => {
+    const key     = `${sessionKey}_${f.type}_${f.gapLow.toFixed(d)}_${f.gapHigh.toFixed(d)}`;
+    const isBull  = f.type === "bullish";
+    const gapSize = f.gapHigh - f.gapLow;
+
+    const depth = isBull
+      ? (f.gapHigh - price) / gapSize * 100
+      : (price - f.gapLow)  / gapSize * 100;
+
+    if (depth < 1 || depth > 99) return;
+    if (multiMonFired.has(key)) return;
+
+    multiMonFired.add(key);
+    const pct = Math.round(depth);
+    const dir = isBull ? "▲" : "▼";
+
+    // Add to alert log
+    const now = new Date();
+    const entry = {
+      time:    now.toISOString(),
+      timeStr: `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")} `
+              +`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}:${String(now.getSeconds()).padStart(2,"0")}`,
+      symbol:  session.name,
+      symLabel: AF_SYMBOLS.find(s=>s.symbol===session.symbol)?.label || session.symbol,
+      tf:      session.tfStr,
+      dir,
+      type:    f.type,
+      pct,
+      price:   price.toFixed(d),
+      gapLow:  f.gapLow.toFixed(d),
+      gapHigh: f.gapHigh.toFixed(d),
+      mid:     f.mid.toFixed(d),
+    };
+    alertLog.unshift(entry);   // newest first
+    updateAlertBadge();
+    renderAlertLogItem(entry, true);
+
+    // Toast + sound
+    showToast("🎯",
+      `${session.name} ${session.tfStr}  ${dir} FVG — ${pct}% into gap`,
+      "#ff9500", "warning");
+    playMonitorAlert();
+
+    // Re-arm after 60s
+    setTimeout(() => multiMonFired.delete(key), 60000);
+  });
+}
+
+// ── Legacy single-chart monitor (still works when multi is OFF) ─
+function checkFVGMonitor(currentPrice) {
+  if (!fvgMonitorActive || multiMonitorActive || !candles.length) return;
+  const show     = getViewWindow();
+  if (!show.length) return;
+  const fvgs     = detectFVGs(show);
+  const openFVGs = fvgs.filter(f => !f.status);
+  openFVGs.forEach(f => {
+    const key     = `${f.type}_${f.gapLow.toFixed(currentDigits)}_${f.gapHigh.toFixed(currentDigits)}`;
+    const isBull  = f.type === "bullish";
+    const gapSize = f.gapHigh - f.gapLow;
+    const depth   = isBull
+      ? (f.gapHigh - currentPrice) / gapSize * 100
+      : (currentPrice - f.gapLow)  / gapSize * 100;
+    if (depth < 1 || depth > 99) return;
+    if (multiMonFired.has(key)) return;
+    multiMonFired.add(key);
+    const pct = Math.round(depth);
+    const dir = isBull ? "▲" : "▼";
+    showToast("🎯", `FVG ENTRY ${dir} — ${pct}% into gap at ${currentPrice.toFixed(currentDigits)}`, "#ff9500", "warning");
+    playMonitorAlert();
+    setTimeout(() => multiMonFired.delete(key), 60000);
+  });
+}
+
+function playMonitorAlert() {
+  try {
+    [0, 0.18, 0.36].forEach((offset, i) => {
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(700 + i * 200, audioCtx.currentTime + offset);
+      gain.gain.setValueAtTime(0.28, audioCtx.currentTime + offset);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + offset + 0.15);
+      osc.start(audioCtx.currentTime + offset);
+      osc.stop(audioCtx.currentTime + offset + 0.15);
+    });
+  } catch(e) {}
+}
+
+// ── Alert log UI ──────────────────────────────────────────────
+function updateAlertBadge() {
+  const badge = document.getElementById("alert-badge");
+  const btn   = document.getElementById("btn-alerts");
+  if (alertLog.length > 0) {
+    badge.textContent = alertLog.length > 99 ? "99+" : alertLog.length;
+    badge.classList.add("show");
+    btn.classList.add("has-alerts");
+  } else {
+    badge.classList.remove("show");
+    btn.classList.remove("has-alerts");
+  }
+  document.getElementById("alert-log-title").textContent =
+    `🔔 ALERT LOG (${alertLog.length})`;
+}
+
+function renderAlertLogItem(entry, prepend = false) {
+  const body = document.getElementById("alert-log-body");
+  const item = document.createElement("div");
+  item.className = "alert-item";
+  item.innerHTML = `
+    <div class="alert-item-header">
+      <span class="alert-item-sym">${entry.dir} ${entry.symbol}</span>
+      <span class="alert-item-ent">ENT ${entry.pct}%</span>
+    </div>
+    <div class="alert-item-row">
+      <span class="afvg-sym-badge">${entry.symLabel}</span>
+      <span class="afvg-tf-badge">${entry.tf}</span>
+    </div>
+    <div class="alert-item-row">
+      <span>Gap:</span><b>${entry.gapLow} – ${entry.gapHigh}</b>
+    </div>
+    <div class="alert-item-row">
+      <span>Price at alert:</span><b>${entry.price}</b>
+    </div>
+    <div class="alert-item-row">
+      <span>Time:</span><b>${entry.timeStr}</b>
+    </div>
+  `;
+  if (prepend && body.firstChild) body.insertBefore(item, body.firstChild);
+  else body.appendChild(item);
+}
+
+function openAlertLog() {
+  // Rebuild if empty (e.g. first open)
+  const body = document.getElementById("alert-log-body");
+  if (!body.children.length && alertLog.length) {
+    alertLog.forEach(e => renderAlertLogItem(e, false));
+  }
+  if (!alertLog.length) {
+    body.innerHTML = `<div class="fvg-list-empty">No alerts yet.<br>Start monitoring to catch FVG entries.</div>`;
+  }
+  document.getElementById("alert-log-panel").classList.add("open");
+}
+
+function closeAlertLog() {
+  document.getElementById("alert-log-panel").classList.remove("open","collapsed");
+  document.getElementById("alert-log-roll").textContent = "▲";
+}
+
+function clearAlertLog() {
+  alertLog.length = 0;
+  document.getElementById("alert-log-body").innerHTML =
+    `<div class="fvg-list-empty">Log cleared.</div>`;
+  updateAlertBadge();
+}
+
+function downloadAlertLog() {
+  if (!alertLog.length) {
+    showToast("⚠", "No alerts to download", "var(--muted)", "info");
+    return;
+  }
+  const header = "Time,Symbol,TF,Direction,Type,ENT%,Price,GapLow,GapHigh,Mid\n";
+  const rows   = alertLog.map(e =>
+    `${e.timeStr},${e.symbol},${e.tf},${e.dir},${e.type},${e.pct}%,${e.price},${e.gapLow},${e.gapHigh},${e.mid}`
+  ).join("\n");
+  const blob = new Blob([header + rows], { type: "text/csv" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = `fvg_alerts_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Legacy toggleMonitor kept so old references don't break
+function toggleMonitor() { openMonitorModal(); }
 
 /**
  * Scan last fvgScanCount candles for FVGs + ENT.
@@ -1315,7 +2652,7 @@ function toggleFVG() {
  *   - If depth >= 99% ignore (full close — beyond scope for now).
  *   - If NO candle reaches the gap → discard the FVG entirely (don't draw it).
  */
-function detectFVGs(show) {
+function detectFVGs(show, scanOffset = 0) {
   const fvgs = [];
   const scanStart = Math.max(0, show.length - fvgScanCount);
 
@@ -1325,10 +2662,12 @@ function detectFVGs(show) {
 
     if (c1.high < c3.low) {
       fvg = { type:"bullish", gapLow:c1.high, gapHigh:c3.low,
-              i1:i, i2:i+1, i3:i+2, epoch2:c2.epoch };
+              i1:i, i2:i+1, i3:i+2, epoch2:c2.epoch,
+              absI2: scanOffset + i + 1 };   // absolute index of c2 in candles[]
     } else if (c1.low > c3.high) {
       fvg = { type:"bearish", gapLow:c3.high, gapHigh:c1.low,
-              i1:i, i2:i+1, i3:i+2, epoch2:c2.epoch };
+              i1:i, i2:i+1, i3:i+2, epoch2:c2.epoch,
+              absI2: scanOffset + i + 1 };
     }
 
     if (!fvg) continue;
@@ -1355,19 +2694,22 @@ function detectFVGs(show) {
         : (touchPrice  - fvg.gapLow) / gapSize * 100;
 
       if (depth < 1) continue;   // hasn't touched the gap
-      if (depth > 99) break;     // blew through — invalid, discard this FVG
+      if (depth > 99) {          // blew through — invalid, discard this FVG
+        fvg.invalid = true;
+        break;
+      }
 
       // First valid touch found — record and stop
       const clampedDepth = depth;
       fvg.status     = "ENT";
       fvg.entPercent = Math.round(clampedDepth);
-      fvg.reachPrice = touchPrice;   // exact price where wick entered
+      fvg.reachPrice = touchPrice;
       fvg.entCandle  = c;
-      break;   // ← FIRST candle only, stop immediately
+      break;
     }
 
-    // Only keep FVGs where an ENT candle was found
-    if (fvg.status === "ENT") fvgs.push(fvg);
+    // Keep all FVGs except invalidated (>99% blowthrough)
+    if (!fvg.invalid) fvgs.push(fvg);
   }
   return fvgs;
 }
@@ -1544,6 +2886,11 @@ function renderChart() {
   if (!candles.length || !width) return;
   const show   = getViewWindow();
   if (!show.length) return;
+  // Calculate where this slice starts in the global candles array
+  const total = candles.length;
+  const end   = Math.max(0, total - viewOffset);
+  const start = Math.max(0, end - viewCount);
+  const scanOffset = start;
   const allHigh = d3.max(show,d=>d.high);
   const allLow  = d3.min(show,d=>d.low);
   const pad     = (allHigh-allLow)*0.06||allHigh*0.002;
@@ -1625,16 +2972,25 @@ function renderChart() {
   refreshHlines();
 
   // ── FVG overlay ──
-  const fvgs = detectFVGs(show);
+  const fvgs = detectFVGs(show, scanOffset);
   drawFVGs(show, fvgs);
   if (fvgActive) {
-    const bull    = fvgs.filter(f=>f.type==="bullish").length;
-    const bear    = fvgs.filter(f=>f.type==="bearish").length;
-    const scanned = Math.min(fvgScanCount, show.length);
+    const bull     = fvgs.filter(f=>f.type==="bullish").length;
+    const bear     = fvgs.filter(f=>f.type==="bearish").length;
+    const entCount = fvgs.filter(f=>f.status==="ENT").length;
+    const openCount= fvgs.filter(f=>!f.status).length;
+    const scanned  = Math.min(fvgScanCount, show.length);
 
     let countTxt = fvgs.length > 0
-      ? `${fvgs.length} ENT gap${fvgs.length>1?"s":""} in last ${scanned}  (${bull}▲ ${bear}▼)`
-      : `no ENT gaps in last ${scanned} candles`;
+      ? `${fvgs.length} gap${fvgs.length>1?"s":""} in last ${scanned}  (${bull}▲ ${bear}▼)`
+      : `no gaps in last ${scanned} candles`;
+
+    if (fvgs.length > 0) {
+      const parts = [];
+      if (entCount)  parts.push(`<span style="color:#00c7ff">${entCount} ENT</span>`);
+      if (openCount) parts.push(`<span style="color:var(--muted)">${openCount} open</span>`);
+      if (parts.length) countTxt += `  —  ${parts.join("  ")}`;
+    }
 
     document.getElementById("fvg-count").innerHTML = countTxt;
 
@@ -1647,6 +3003,9 @@ function renderChart() {
 
   // Check zones against latest price
   checkZones(last.close);
+
+  // Check open FVGs for monitor alerts
+  checkFVGMonitor(last.close);
 }
 
 function setOHLC(c){
@@ -1832,7 +3191,7 @@ document.addEventListener("mousemove",e=>{
   if (isYDragging) {
     const dy = e.clientY - yDragStartY;
     // 200px of drag = 2x zoom change
-    yZoomFactor = Math.max(0.2, Math.min(20, yDragStartFactor * Math.pow(1.01, dy)));
+    yZoomFactor = Math.max(0.2, Math.min(20, yDragStartFactor * Math.pow(1.003, dy)));
     renderChart();
     return;
   }
@@ -2052,6 +3411,22 @@ function handleMessage(msg){
     }));
     prevPrice = null;
     document.getElementById("loading").classList.add("hidden");
+
+    // If we have a pending navigation from All-FVG list, zoom in and center on it
+    if (pendingNavEpoch !== null) {
+      const targetEpoch = pendingNavEpoch;
+      pendingNavEpoch = null;
+      const idx = candles.findIndex(c => c.epoch === targetEpoch);
+      if (idx >= 0) {
+        // Zoom to comfortable level
+        viewCount = Math.max(VIEW_MIN, Math.min(VIEW_MAX, 40));
+        clampViewCount();
+        const halfView = Math.round(viewCount / 2);
+        viewOffset = Math.max(0, candles.length - (idx + halfView));
+        clampViewOffset();
+      }
+    }
+
     renderChart();
   }
   if(msg.msg_type==="ohlc"){
@@ -2492,7 +3867,7 @@ connect();
     if (touchIsYZoom && ts.length === 1) {
       const dy = ts[0].clientY - yZoomTouchStartY;
       // drag up (dy < 0) = zoom in (tighter price range), drag down = zoom out
-      yZoomFactor = Math.max(0.2, Math.min(20, yZoomTouchStartFactor * Math.pow(1.012, dy)));
+      yZoomFactor = Math.max(0.2, Math.min(20, yZoomTouchStartFactor * Math.pow(1.002, dy)));
       renderChart();
       return;
     }
@@ -2538,12 +3913,14 @@ connect();
       // ── Pinch zoom (X axis) ──
       const dist = pinchDist(ts);
       if (lastPinchDist) {
-        const ratio = lastPinchDist / dist;
+        const rawRatio = lastPinchDist / dist;
+        // Dampen: interpolate ratio toward 1 so each frame moves less
+        const ratio = 1 + (rawRatio - 1) * 0.15;
         const midX  = (ts[0].clientX + ts[1].clientX) / 2;
         const rect  = container.getBoundingClientRect();
         const chartW = width - margin.left - margin.right;
         const frac   = Math.max(0, Math.min(1, (midX - rect.left - margin.left) / chartW));
-        zoomBy(ratio > 1 ? Math.min(ratio, 1.3) : Math.max(ratio, 0.77), frac);
+        zoomBy(Math.max(0.95, Math.min(ratio, 1.05)), frac);
       }
       lastPinchDist = dist;
 
